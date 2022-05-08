@@ -69,10 +69,10 @@ public:
 
     std::shared_ptr<Token> peekNextToken();
     std::shared_ptr<Token> getNextToken();
+private:
     std::shared_ptr<Token> getStringToken();
     std::shared_ptr<Token> getNumericalToken();
     std::shared_ptr<Token> getNameToken();
-private:
     std::unique_ptr<Input> input;
     std::shared_ptr<Token> nextToken;
 };
