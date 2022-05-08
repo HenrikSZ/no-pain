@@ -17,8 +17,7 @@ std::ostream& operator << (std::ostream& os, const Token& token) {
 }
 
 
-Tokenizer::Tokenizer(std::unique_ptr<Input> input): input(std::move(input)) {
-}
+Tokenizer::Tokenizer(std::unique_ptr<Input> input): input(std::move(input)) {}
 
 Tokenizer::~Tokenizer() {
     //
@@ -29,10 +28,12 @@ std::shared_ptr<Token> Tokenizer::getStringToken() {
 
     bool escapeNext = false;
 
+    char nextChar = input->getNextChar();
     while (input->hasNext()) {
+        nextChar = input->getNextChar();
         if (escapeNext) {
             escapeNext = false;
-            switch (input->getCurrentChar()) {
+            switch (nextChar) {
                 case 't':
                     ret->payloadStr += '\t';
                     break;
@@ -42,17 +43,20 @@ std::shared_ptr<Token> Tokenizer::getStringToken() {
                 case 'n':
                     ret->payloadStr += '\n';
                     break;
-                default:
-                    ret->payloadStr += input->getCurrentChar();
+                case '"':
+                    ret->payloadStr += '"';
                     break;
+                case '\\':
+                    ret->payloadStr += '\\';
+                    break;
+                default:
+                    throw std::exception("Malformed escape character");
             }
-        } else if (input->getCurrentChar() == '"') {
+        } else if (nextChar == '"') {
             return ret;
         } else {
-            ret->payloadStr += input->getCurrentChar();
+            ret->payloadStr += nextChar;
         }
-
-        input->advance();
     }
     
     throw std::exception("Reached end of file while tokenizing string");
@@ -60,26 +64,42 @@ std::shared_ptr<Token> Tokenizer::getStringToken() {
 
 std::shared_ptr<Token> Tokenizer::getNumericalToken() {
     std::string numStr;
+    bool isFloat = false;
 
-    while (isdigit(input->getCurrentChar())) {
-        numStr += input->getCurrentChar();
-        if (input->hasNext()) input->advance();
+    char nextChar = input->peekNextChar();
+    while (isdigit(nextChar) || nextChar == '.') {
+        if (nextChar == '.') {
+            if (isFloat)
+                throw std::exception("Malformed floating point number");
+
+            isFloat = true;
+        }
+        numStr += input->getNextChar();
+        if (input->hasNext()) nextChar = input->peekNextChar();
         else break;
     }
 
-    auto ret = std::make_shared<Token>(TokenType::INT);
-    ret->payloadInt = std::stoi(numStr);
+    if (isFloat) {
+        auto ret = std::make_shared<Token>(TokenType::FLOAT);
+        ret->payloadFloat = std::stof(numStr);
 
-    return ret;
+        return ret;
+    } else {
+        auto ret = std::make_shared<Token>(TokenType::INT);
+        ret->payloadInt = std::stoi(numStr);
+
+        return ret;
+    }    
 }
 
 std::shared_ptr<Token> Tokenizer::getNameToken() {
    std::string nameStr;
 
-    while (isalpha(input->getCurrentChar())) {
-        nameStr += input->getCurrentChar();
+    char nextChar = input->peekNextChar();
+    while (isalpha(nextChar)) {
+        nameStr += input->getNextChar();
 
-        if (input->hasNext()) input->advance();
+        if (input->hasNext()) nextChar = input->peekNextChar();
         else break;
     }
 
@@ -109,48 +129,69 @@ std::shared_ptr<Token> Tokenizer::getNextToken() {
         return ret;
     }
 
-    input->advance();
-    while (input->hasNext() && isspace(input->getCurrentChar())) {
-        input->advance();
-    }
-
     if (!input->hasNext()) {
         return std::make_shared<Token>(TokenType::END_OF_FILE);
     }
 
-    switch (input->getCurrentChar()) {
+    char nextChar = input->peekNextChar();
+    while (isspace(nextChar) && input->hasNext()) {
+        input->getNextChar();
+        nextChar = input->peekNextChar();
+    }
+
+    if (isspace(nextChar) && !input->hasNext()) {
+        return std::make_shared<Token>(TokenType::END_OF_FILE);
+    }
+
+    switch (nextChar) {
         case '(':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::OPEN_PAR);
         case ')':
-            return std::make_shared<Token>(TokenType::OPEN_PAR);
+            input->getNextChar();
+            return std::make_shared<Token>(TokenType::CLOSE_PAR);
         case ',':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::COMMA);
+        case ';':
+            input->getNextChar();
+            return std::make_shared<Token>(TokenType::END_OF_LINE);
         case '{':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::OPEN_BLOCK);
         case '}':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::CLOSE_BLOCK);
+        case '=':
+            input->getNextChar();
+            return std::make_shared<Token>(TokenType::ASSIGN);
         case '+':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::ADD);
         case '-':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::SUBTRACT);
         case '*':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::MULTIPLY);
         case '/':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::DIVIDE);
         case '%':
+            input->getNextChar();
             return std::make_shared<Token>(TokenType::MODULO);
         case '"':
             return getStringToken();
     }
 
-    if (isdigit(input->getCurrentChar())) {
+    if (isdigit(nextChar)) {
         return getNumericalToken();
     }
 
-    if (isalpha(input->getCurrentChar())) {
+    if (isalpha(nextChar)) {
         return getNameToken();
     }
 
-    throw std::exception("");
+    throw std::exception("Malformed token");
 }
 

@@ -6,14 +6,12 @@
 TEST(FileInput, CheckInit) {
     FileInput input(std::string("D:\\IT\\c++\\no-pain\\test-scripts\\simple.npn"));
     ASSERT_TRUE(input.hasNext());
-    input.advance();
-    ASSERT_EQ(input.getCurrentChar(), 'p');
+    ASSERT_EQ(input.getNextChar(), 'p');
 }
 
 
 TEST(StringInput, CheckInit) {
     StringInput input(std::string("print(\"Hello, world!\")"));
     ASSERT_TRUE(input.hasNext());
-    input.advance();
-    ASSERT_EQ(input.getCurrentChar(), 'p');
+    ASSERT_EQ(input.getNextChar(), 'p');
 }
