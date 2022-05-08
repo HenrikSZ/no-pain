@@ -195,3 +195,12 @@ std::shared_ptr<Token> Tokenizer::getNextToken() {
     throw std::exception("Malformed token");
 }
 
+
+std::shared_ptr<Token> Tokenizer::peekNextToken() {
+    if (!nextToken) {
+        nextToken = getNextToken();
+    }
+
+    return nextToken;
+}
+

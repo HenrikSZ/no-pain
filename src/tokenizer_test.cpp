@@ -161,3 +161,25 @@ TEST(Tokenizer, Jumble) {
     token = tokenizer.getNextToken();
     ASSERT_EQ(token->getType(), TokenType::END_OF_FILE);
 }
+
+
+TEST(Tokenizer, Peeking) {
+    std::unique_ptr<Input> input(new StringInput("2.542 \n\"Test\" = var FUN {100}"));
+    Tokenizer tokenizer(std::move(input));
+
+    auto token = tokenizer.peekNextToken();
+    ASSERT_EQ(token->getType(), TokenType::FLOAT);
+    ASSERT_FLOAT_EQ(token->payloadFloat, 2.542);
+
+    token = tokenizer.peekNextToken();
+    ASSERT_EQ(token->getType(), TokenType::FLOAT);
+    ASSERT_FLOAT_EQ(token->payloadFloat, 2.542);
+
+    token = tokenizer.getNextToken();
+    ASSERT_EQ(token->getType(), TokenType::FLOAT);
+    ASSERT_FLOAT_EQ(token->payloadFloat, 2.542);
+
+     token = tokenizer.getNextToken();
+    ASSERT_EQ(token->getType(), TokenType::STRING);
+    ASSERT_STREQ(token->payloadStr.c_str(), "Test");
+}
