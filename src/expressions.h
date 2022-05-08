@@ -1,0 +1,55 @@
+#ifndef EXPRESSIONS_H
+#define EXPRESSIONS_H
+
+#include <memory>
+
+#include "environment.h"
+#include "tokenizer.h"
+
+
+class Expression {
+public:
+    virtual std::shared_ptr<Value> evaluate(Environment& env) = 0;
+};
+
+
+class Literal: Expression {
+public:
+    Literal(const Token& token);
+
+    std::shared_ptr<Value> evaluate(Environment& env);
+
+private:
+    std::shared_ptr<Value> value;
+};
+
+
+class BinaryOperation: Expression {
+public:
+    BinaryOperation(std::unique_ptr<Expression> left,
+        std::unique_ptr<Expression> right):
+            left(std::move(left)), right(std::move(right)) {}
+protected:
+    std::unique_ptr<Expression> left;
+    std::unique_ptr<Expression> right;
+};
+
+
+class Addition: protected BinaryOperation {
+    std::shared_ptr<Value> evaluate(Environment& env);
+};
+
+class Subtraction: protected BinaryOperation {
+    std::shared_ptr<Value> evaluate(Environment& env);
+};
+
+class Multiplication: protected BinaryOperation {
+    std::shared_ptr<Value> evaluate(Environment& env);
+};
+
+class Division: protected BinaryOperation {
+    std::shared_ptr<Value> evaluate(Environment& env);
+};
+
+
+#endif
