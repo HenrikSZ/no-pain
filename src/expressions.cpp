@@ -151,5 +151,5 @@ std::shared_ptr<ExpressionValue> Assignment::evaluate(Environment& env) {
     auto value = right->evaluate(env);
     env.setVariable(left->name, std::move(value));
 
-    return nullptr;
+    return value;
 }

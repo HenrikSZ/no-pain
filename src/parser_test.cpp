@@ -9,7 +9,7 @@ TEST(Parser, SimpleAddition) {
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
     auto parser = std::make_unique<Parser>(std::move(tokenizer));
 
-    auto tree = parser->parseLine();
+    auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
 
     ASSERT_EQ(result->type, ExpressionValueType::INT);
@@ -24,7 +24,7 @@ TEST(Parser, MultiplicationAndAddition) {
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
     auto parser = std::make_unique<Parser>(std::move(tokenizer));
 
-    auto tree = parser->parseLine();
+    auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
 
     ASSERT_EQ(result->type, ExpressionValueType::INT);
@@ -39,9 +39,30 @@ TEST(Parser, ArithmeticWithParentheses) {
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
     auto parser = std::make_unique<Parser>(std::move(tokenizer));
 
-    auto tree = parser->parseLine();
+    auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
 
     ASSERT_EQ(result->type, ExpressionValueType::INT);
     ASSERT_EQ(result->payloadInt, 45);
+}
+
+
+TEST(Parser, Assignment) {
+    Environment env;
+
+    std::unique_ptr<Input> input = std::make_unique<StringInput>("x = (10 + 5) * 3");
+    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
+    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+
+    auto tree = parser->parseExpression();
+    auto result = tree->evaluate(env);
+
+    // Test if assignment passes value through
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 45);
+
+    auto variable = env.getVariable(std::string("x"));
+    ASSERT_EQ(variable->type, ExpressionValueType::INT);
+    ASSERT_EQ(variable->payloadInt, 45);
+
 }

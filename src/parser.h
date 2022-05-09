@@ -8,9 +8,10 @@
 class Parser {
 public:
     Parser(std::unique_ptr<Tokenizer> tokenizer): tokenizer(std::move(tokenizer)) {}
-    std::unique_ptr<Expression> parseLine();
+    std::unique_ptr<Expression> parseExpression();
 
 private:
+    std::unique_ptr<Expression> parseAssignment();
     std::unique_ptr<Expression> parseAddOrSub();
     std::unique_ptr<Expression> parseMulOrDiv();
     std::unique_ptr<Expression> parseParentheses();
