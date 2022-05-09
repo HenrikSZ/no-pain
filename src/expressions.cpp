@@ -77,7 +77,7 @@ std::shared_ptr<ExpressionValue> Subtraction::evaluate(std::shared_ptr<Environme
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
     if (leftValue->type != rightValue->type) {
-        throw std::exception("Addition: Types do not match up");
+        throw std::exception("Subtraction: Types do not match up");
     }
 
     auto ret = std::make_shared<ExpressionValue>();
@@ -102,7 +102,7 @@ std::shared_ptr<ExpressionValue> Multiplication::evaluate(std::shared_ptr<Enviro
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
     if (leftValue->type != rightValue->type) {
-        throw std::exception("Addition: Types do not match up");
+        throw std::exception("Multiplication: Types do not match up");
     }
 
     auto ret = std::make_shared<ExpressionValue>();
@@ -127,7 +127,7 @@ std::shared_ptr<ExpressionValue> Division::evaluate(std::shared_ptr<Environment>
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
     if (leftValue->type != rightValue->type) {
-        throw std::exception("Addition: Types do not match up");
+        throw std::exception("Division: Types do not match up");
     }
 
     auto ret = std::make_shared<ExpressionValue>();
@@ -140,6 +140,156 @@ std::shared_ptr<ExpressionValue> Division::evaluate(std::shared_ptr<Environment>
         case ExpressionValueType::FLOAT:
             ret->payloadFloat = leftValue->payloadFloat / rightValue->payloadFloat;
             ret->type = ExpressionValueType::FLOAT;
+            break;
+    }
+
+    return ret;
+}
+
+
+std::shared_ptr<ExpressionValue> EqualComparison::evaluate(std::shared_ptr<Environment>& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
+
+    if (leftValue->type != rightValue->type) {
+        throw std::exception("Equal: Types do not match up");
+    }
+
+    auto ret = std::make_shared<ExpressionValue>();
+
+    switch (leftValue->type) {
+        case ExpressionValueType::INT:
+            ret->payloadInt = leftValue->payloadInt == rightValue->payloadInt ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+        case ExpressionValueType::FLOAT:
+            ret->payloadFloat = leftValue->payloadFloat == rightValue->payloadFloat ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+    }
+
+    return ret;
+}
+
+
+std::shared_ptr<ExpressionValue> GreaterThanComparison::evaluate(std::shared_ptr<Environment>& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
+
+    if (leftValue->type != rightValue->type) {
+        throw std::exception("Greater than: Types do not match up");
+    }
+
+    auto ret = std::make_shared<ExpressionValue>();
+
+    switch (leftValue->type) {
+        case ExpressionValueType::INT:
+            ret->payloadInt = leftValue->payloadInt > rightValue->payloadInt ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+        case ExpressionValueType::FLOAT:
+            ret->payloadFloat = leftValue->payloadFloat > rightValue->payloadFloat ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+    }
+
+    return ret;
+}
+
+
+std::shared_ptr<ExpressionValue> GreaterThanOrEqualComparison::evaluate(std::shared_ptr<Environment>& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
+
+    if (leftValue->type != rightValue->type) {
+        throw std::exception("Greater than or equal: Types do not match up");
+    }
+
+    auto ret = std::make_shared<ExpressionValue>();
+
+    switch (leftValue->type) {
+        case ExpressionValueType::INT:
+            ret->payloadInt = leftValue->payloadInt >= rightValue->payloadInt ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+        case ExpressionValueType::FLOAT:
+            ret->payloadFloat = leftValue->payloadFloat >= rightValue->payloadFloat ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+    }
+
+    return ret;
+}
+
+
+std::shared_ptr<ExpressionValue> LessThanComparison::evaluate(std::shared_ptr<Environment>& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
+
+    if (leftValue->type != rightValue->type) {
+        throw std::exception("Less than: Types do not match up");
+    }
+
+    auto ret = std::make_shared<ExpressionValue>();
+
+    switch (leftValue->type) {
+        case ExpressionValueType::INT:
+            ret->payloadInt = leftValue->payloadInt < rightValue->payloadInt ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+        case ExpressionValueType::FLOAT:
+            ret->payloadFloat = leftValue->payloadFloat < rightValue->payloadFloat ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+    }
+
+    return ret;
+}
+
+
+std::shared_ptr<ExpressionValue> LessThanOrEqualComparison::evaluate(std::shared_ptr<Environment>& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
+
+    if (leftValue->type != rightValue->type) {
+        throw std::exception("Less than or equal: Types do not match up");
+    }
+
+    auto ret = std::make_shared<ExpressionValue>();
+
+    switch (leftValue->type) {
+        case ExpressionValueType::INT:
+            ret->payloadInt = leftValue->payloadInt <= rightValue->payloadInt ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+        case ExpressionValueType::FLOAT:
+            ret->payloadFloat = leftValue->payloadFloat <= rightValue->payloadFloat ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+    }
+
+    return ret;
+}
+
+
+std::shared_ptr<ExpressionValue> NotEqualComparison::evaluate(std::shared_ptr<Environment>& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
+
+    if (leftValue->type != rightValue->type) {
+        throw std::exception("Not equal: Types do not match up");
+    }
+
+    auto ret = std::make_shared<ExpressionValue>();
+
+    switch (leftValue->type) {
+        case ExpressionValueType::INT:
+            ret->payloadInt = leftValue->payloadInt != rightValue->payloadInt ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
+            break;
+        case ExpressionValueType::FLOAT:
+            ret->payloadFloat = leftValue->payloadFloat != rightValue->payloadFloat ? 1 : 0;
+            ret->type = ExpressionValueType::INT;
             break;
     }
 

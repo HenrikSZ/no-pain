@@ -75,6 +75,54 @@ public:
 };
 
 
+class EqualComparison: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
+class GreaterThanComparison: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
+class GreaterThanOrEqualComparison: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
+class LessThanComparison: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
+class LessThanOrEqualComparison: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
+class NotEqualComparison: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
 class Assignment: public Expression {
 public:
     Assignment(std::unique_ptr<Name> left,

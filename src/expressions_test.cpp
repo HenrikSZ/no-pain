@@ -82,6 +82,228 @@ TEST(Expression, MultiplicationAdditionCombined) {
 }
 
 
+TEST(Expression, Equalvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token leftToken(TokenType::INT);
+    leftToken.payloadInt = 10;
+
+    Token equalToken(TokenType::INT);
+    equalToken.payloadInt = 10;
+
+    Token notEqualToken(TokenType::INT);
+    notEqualToken.payloadInt = 11;
+
+    std::unique_ptr<Expression> leftLiteral =
+        std::make_unique<Literal>(leftToken);
+    std::unique_ptr<Expression> equalLiteral =
+        std::make_unique<Literal>(equalToken);
+    std::unique_ptr<Expression> notEqualLiteral =
+        std::make_unique<Literal>(notEqualToken);
+
+    EqualComparison equalComparison(std::move(leftLiteral),
+        std::move(equalLiteral));
+    auto result = equalComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+
+    leftLiteral = std::make_unique<Literal>(leftToken);
+
+    EqualComparison notEqualComparison(std::move(leftLiteral),
+        std::move(notEqualLiteral));
+    result = notEqualComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+}
+
+
+TEST(Expression, GreaterThanEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token leftToken(TokenType::INT);
+    leftToken.payloadInt = 10;
+
+    Token greatherThanToken(TokenType::INT);
+    greatherThanToken.payloadInt = 9;
+
+    Token notGreatherThanToken(TokenType::INT);
+    notGreatherThanToken.payloadInt = 10;
+
+    std::unique_ptr<Expression> leftLiteral =
+        std::make_unique<Literal>(leftToken);
+    std::unique_ptr<Expression> greatherThanLiteral =
+        std::make_unique<Literal>(greatherThanToken);
+    std::unique_ptr<Expression> notGreaterThanLiteral =
+        std::make_unique<Literal>(notGreatherThanToken);
+
+    GreaterThanComparison greaterThanComparison(std::move(leftLiteral),
+        std::move(greatherThanLiteral));
+    auto result = greaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+
+    leftLiteral = std::make_unique<Literal>(leftToken);
+
+    GreaterThanComparison notGreaterThanComparison(std::move(leftLiteral),
+        std::move(notGreaterThanLiteral));
+    result = notGreaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+}
+
+
+TEST(Expression, GreaterThanOrEqualEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token leftToken(TokenType::INT);
+    leftToken.payloadInt = 10;
+
+    Token greatherThanToken(TokenType::INT);
+    greatherThanToken.payloadInt = 10;
+
+    Token notGreatherThanToken(TokenType::INT);
+    notGreatherThanToken.payloadInt = 11;
+
+    std::unique_ptr<Expression> leftLiteral =
+        std::make_unique<Literal>(leftToken);
+    std::unique_ptr<Expression> greatherThanLiteral =
+        std::make_unique<Literal>(greatherThanToken);
+    std::unique_ptr<Expression> notGreaterThanLiteral =
+        std::make_unique<Literal>(notGreatherThanToken);
+
+    GreaterThanOrEqualComparison greaterThanComparison(std::move(leftLiteral),
+        std::move(greatherThanLiteral));
+    auto result = greaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+
+    leftLiteral = std::make_unique<Literal>(leftToken);
+
+    GreaterThanOrEqualComparison notGreaterThanComparison(std::move(leftLiteral),
+        std::move(notGreaterThanLiteral));
+    result = notGreaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+}
+
+
+TEST(Expression, LessThanEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token leftToken(TokenType::INT);
+    leftToken.payloadInt = 10;
+
+    Token greatherThanToken(TokenType::INT);
+    greatherThanToken.payloadInt = 11;
+
+    Token notGreatherThanToken(TokenType::INT);
+    notGreatherThanToken.payloadInt = 10;
+
+    std::unique_ptr<Expression> leftLiteral =
+        std::make_unique<Literal>(leftToken);
+    std::unique_ptr<Expression> greatherThanLiteral =
+        std::make_unique<Literal>(greatherThanToken);
+    std::unique_ptr<Expression> notGreaterThanLiteral =
+        std::make_unique<Literal>(notGreatherThanToken);
+
+    LessThanComparison greaterThanComparison(std::move(leftLiteral),
+        std::move(greatherThanLiteral));
+    auto result = greaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+
+    leftLiteral = std::make_unique<Literal>(leftToken);
+
+    LessThanComparison notGreaterThanComparison(std::move(leftLiteral),
+        std::move(notGreaterThanLiteral));
+    result = notGreaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+}
+
+
+TEST(Expression, LessThanOrEqualEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token leftToken(TokenType::INT);
+    leftToken.payloadInt = 10;
+
+    Token greatherThanToken(TokenType::INT);
+    greatherThanToken.payloadInt = 10;
+
+    Token notGreatherThanToken(TokenType::INT);
+    notGreatherThanToken.payloadInt = 9;
+
+    std::unique_ptr<Expression> leftLiteral =
+        std::make_unique<Literal>(leftToken);
+    std::unique_ptr<Expression> greatherThanLiteral =
+        std::make_unique<Literal>(greatherThanToken);
+    std::unique_ptr<Expression> notGreaterThanLiteral =
+        std::make_unique<Literal>(notGreatherThanToken);
+
+    LessThanOrEqualComparison greaterThanComparison(std::move(leftLiteral),
+        std::move(greatherThanLiteral));
+    auto result = greaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+
+    leftLiteral = std::make_unique<Literal>(leftToken);
+
+    LessThanOrEqualComparison notGreaterThanComparison(std::move(leftLiteral),
+        std::move(notGreaterThanLiteral));
+    result = notGreaterThanComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+}
+
+
+TEST(Expression, NotEqualvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token leftToken(TokenType::INT);
+    leftToken.payloadInt = 10;
+
+    Token equalToken(TokenType::INT);
+    equalToken.payloadInt = 10;
+
+    Token notEqualToken(TokenType::INT);
+    notEqualToken.payloadInt = 11;
+
+    std::unique_ptr<Expression> leftLiteral =
+        std::make_unique<Literal>(leftToken);
+    std::unique_ptr<Expression> equalLiteral =
+        std::make_unique<Literal>(equalToken);
+    std::unique_ptr<Expression> notEqualLiteral =
+        std::make_unique<Literal>(notEqualToken);
+
+    NotEqualComparison equalComparison(std::move(leftLiteral),
+        std::move(equalLiteral));
+    auto result = equalComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+
+    leftLiteral = std::make_unique<Literal>(leftToken);
+
+    NotEqualComparison notEqualComparison(std::move(leftLiteral),
+        std::move(notEqualLiteral));
+    result = notEqualComparison.evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+}
+
+
 TEST(Expression, NameEvaluation) {
     auto env = std::make_shared<Environment>();
 
