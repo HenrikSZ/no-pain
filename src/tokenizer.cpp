@@ -160,7 +160,36 @@ std::shared_ptr<Token> Tokenizer::getNextToken() {
             return std::make_shared<Token>(TokenType::CLOSE_BLOCK);
         case '=':
             input->getNextChar();
-            return std::make_shared<Token>(TokenType::ASSIGN);
+            if (input->peekNextChar() == '=') {
+                input->getNextChar();
+                return std::make_shared<Token>(TokenType::EQUALS);
+            } else {
+                return std::make_shared<Token>(TokenType::ASSIGN);
+            }
+        case '>':
+            input->getNextChar();
+            if (input->peekNextChar() == '=') {
+                input->getNextChar();
+                return std::make_shared<Token>(TokenType::GREATER_OR_EQUALS);
+            } else {
+                return std::make_shared<Token>(TokenType::GREATER);
+            }
+        case '<':
+            input->getNextChar();
+            if (input->peekNextChar() == '=') {
+                input->getNextChar();
+                return std::make_shared<Token>(TokenType::LESS_OR_EQUALS);
+            } else {
+                return std::make_shared<Token>(TokenType::LESS);
+            }
+         case '!':
+            input->getNextChar();
+            if (input->peekNextChar() == '=') {
+                input->getNextChar();
+                return std::make_shared<Token>(TokenType::NOT_EQUALS);
+            } else {
+                return std::make_shared<Token>(TokenType::NOT);
+            }
         case '+':
             input->getNextChar();
             return std::make_shared<Token>(TokenType::ADD);

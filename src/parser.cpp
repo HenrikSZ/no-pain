@@ -51,9 +51,42 @@ std::unique_ptr<Expression> Parser::parseAddOrSub() {
     return leftOperand;
 }
 
+std::unique_ptr<Expression> Parser::parseComparison() {
+    auto leftOperand = parseAddOrSub();
+
+    auto middle = tokenizer->peekNextToken();
+    if (middle->isType(TokenType::EQUALS)) {
+        tokenizer->getNextToken();
+        return std::make_unique<EqualComparison>(
+            std::move(leftOperand), parseExpression());
+    } else if (middle->isType(TokenType::GREATER)) {
+        tokenizer->getNextToken();
+        return std::make_unique<GreaterThanComparison>(
+            std::move(leftOperand), parseExpression());
+    } else if (middle->isType(TokenType::GREATER_OR_EQUALS)) {
+        tokenizer->getNextToken();
+        return std::make_unique<GreaterThanOrEqualComparison>(
+            std::move(leftOperand), parseExpression());
+    } else if (middle->isType(TokenType::LESS)) {
+        tokenizer->getNextToken();
+        return std::make_unique<LessThanComparison>(
+            std::move(leftOperand), parseExpression());
+    } else if (middle->isType(TokenType::LESS_OR_EQUALS)) {
+        tokenizer->getNextToken();
+        return std::make_unique<LessThanOrEqualComparison>(
+            std::move(leftOperand), parseExpression());
+    } else if (middle->isType(TokenType::NOT_EQUALS)) {
+        tokenizer->getNextToken();
+        return std::make_unique<NotEqualComparison>(
+            std::move(leftOperand), parseExpression());
+    } else {
+        return leftOperand;
+    }
+}
+
 std::unique_ptr<Expression> Parser::parseAssignment() {
     auto left = tokenizer->peekNextToken();
-    auto leftOperand = parseAddOrSub();
+    auto leftOperand = parseComparison();
 
     auto middle = tokenizer->peekNextToken();
 
