@@ -6,21 +6,24 @@
 #include <unordered_map>
 
 
-enum ValueType {
+enum class ExpressionValueType {
     STRING,
     INT,
     FLOAT
 };
 
 
-struct Value {
+class ExpressionValue {
+public:
+    ExpressionValue() {}
+    ~ExpressionValue() {}
     union {
         std::string payloadStr;
         int payloadInt;
         float payloadFloat;
     };
 
-    ValueType type;
+    ExpressionValueType type;
 };
 
 
@@ -29,12 +32,12 @@ public:
     Environment();
     Environment(std::shared_ptr<Environment> parent);
     
-    std::shared_ptr<Value> getVariable(std::string& name);
-    void setVariable(std::string& name, std::shared_ptr<Value>& value);
+    std::shared_ptr<ExpressionValue> getVariable(std::string& name);
+    void setVariable(std::string& name, std::shared_ptr<ExpressionValue>& value);
 
 private:
     std::shared_ptr<Environment> parent;
-    std::unordered_map<std::string, std::shared_ptr<Value>> env;
+    std::unordered_map<std::string, std::shared_ptr<ExpressionValue>> env;
 };
 
 

@@ -1,0 +1,21 @@
+#ifndef PARSER_H
+#define PARSER_H
+
+#include <memory>
+
+#include "expressions.h"
+
+class Parser {
+public:
+    Parser(std::unique_ptr<Tokenizer> tokenizer): tokenizer(std::move(tokenizer)) {}
+    std::unique_ptr<Expression> parseLine();
+
+private:
+    std::unique_ptr<Expression> parseAddOrSub();
+    std::unique_ptr<Expression> parseMulOrDiv();
+
+    std::unique_ptr<Tokenizer> tokenizer;
+};
+
+
+#endif

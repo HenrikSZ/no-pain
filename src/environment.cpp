@@ -5,7 +5,7 @@ Environment::Environment(): parent(nullptr) {}
 
 Environment::Environment(std::shared_ptr<Environment> parent): parent(parent) {}
 
-std::shared_ptr<Value> Environment::getVariable(std::string& name) {
+std::shared_ptr<ExpressionValue> Environment::getVariable(std::string& name) {
     auto var = env.find(name);
 
     if (var == env.end()) {
@@ -19,6 +19,6 @@ std::shared_ptr<Value> Environment::getVariable(std::string& name) {
     }
 }
 
-void Environment::setVariable(std::string& name, std::shared_ptr<Value>& value) {
+void Environment::setVariable(std::string& name, std::shared_ptr<ExpressionValue>& value) {
     env[name] = value;
 }

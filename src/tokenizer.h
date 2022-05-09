@@ -10,7 +10,7 @@
 #include "input.h"
 
 
-enum TokenType {
+enum class TokenType {
     UNKNOWN,
     END_OF_FILE,
     END_OF_LINE,

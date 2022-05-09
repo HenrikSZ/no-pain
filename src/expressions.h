@@ -9,22 +9,22 @@
 
 class Expression {
 public:
-    virtual std::shared_ptr<Value> evaluate(Environment& env) = 0;
+    virtual std::shared_ptr<ExpressionValue> evaluate(Environment& env) = 0;
 };
 
 
-class Literal: Expression {
+class Literal: public Expression {
 public:
     Literal(const Token& token);
 
-    std::shared_ptr<Value> evaluate(Environment& env);
+    std::shared_ptr<ExpressionValue> evaluate(Environment& env);
 
 private:
-    std::shared_ptr<Value> value;
+    std::shared_ptr<ExpressionValue> value;
 };
 
 
-class BinaryOperation: Expression {
+class BinaryOperation: public Expression {
 public:
     BinaryOperation(std::unique_ptr<Expression> left,
         std::unique_ptr<Expression> right):
@@ -35,20 +35,32 @@ protected:
 };
 
 
-class Addition: protected BinaryOperation {
-    std::shared_ptr<Value> evaluate(Environment& env);
+class Addition: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+
+    std::shared_ptr<ExpressionValue> evaluate(Environment& env);
 };
 
-class Subtraction: protected BinaryOperation {
-    std::shared_ptr<Value> evaluate(Environment& env);
+class Subtraction: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+
+    std::shared_ptr<ExpressionValue> evaluate(Environment& env);
 };
 
-class Multiplication: protected BinaryOperation {
-    std::shared_ptr<Value> evaluate(Environment& env);
+class Multiplication: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+
+    std::shared_ptr<ExpressionValue> evaluate(Environment& env);
 };
 
-class Division: protected BinaryOperation {
-    std::shared_ptr<Value> evaluate(Environment& env);
+class Division: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(Environment& env);
 };
 
 

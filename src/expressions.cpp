@@ -4,19 +4,19 @@
 Literal::Literal(const Token& token) {
     switch (token.getType()) {
         case TokenType::STRING:
-            value = std::make_shared<Value>();
+            value = std::make_shared<ExpressionValue>();
             value->payloadStr = token.payloadStr;
-            value->type = ValueType::STRING;
+            value->type = ExpressionValueType::STRING;
             break;
         case TokenType::INT:
-            value = std::make_shared<Value>();
-            value->payloadStr = token.payloadStr;
-            value->type = ValueType::INT;
+            value = std::make_shared<ExpressionValue>();
+            value->payloadInt = token.payloadInt;
+            value->type = ExpressionValueType::INT;
             break;
         case TokenType::FLOAT:
-            value = std::make_shared<Value>();
-            value->payloadStr = token.payloadStr;
-            value->type = ValueType::FLOAT;
+            value = std::make_shared<ExpressionValue>();
+            value->payloadFloat = token.payloadFloat;
+            value->type = ExpressionValueType::FLOAT;
             break;
         default:
             throw std::exception("Token not convertible to literal");
@@ -24,60 +24,60 @@ Literal::Literal(const Token& token) {
 }
 
 
-std::shared_ptr<Value> Literal::evaluate(Environment& env) {
+std::shared_ptr<ExpressionValue> Literal::evaluate(Environment& env) {
     return value;
 }
 
 
-std::shared_ptr<Value> Addition::evaluate(Environment& env) {
-    std::shared_ptr<Value> leftValue = left->evaluate(env);
-    std::shared_ptr<Value> rightValue = right->evaluate(env);
+std::shared_ptr<ExpressionValue> Addition::evaluate(Environment& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
     if (leftValue->type != rightValue->type) {
         throw std::exception("Addition: Types do not match up");
     }
 
-    auto ret = std::make_shared<Value>();
+    auto ret = std::make_shared<ExpressionValue>();
 
     switch (leftValue->type) {
-        case ValueType::INT:
+        case ExpressionValueType::INT:
             ret->payloadInt = leftValue->payloadInt + rightValue->payloadInt;
-            ret->type = ValueType::INT;
+            ret->type = ExpressionValueType::INT;
             break;
-        case ValueType::FLOAT:
+        case ExpressionValueType::FLOAT:
             ret->payloadFloat = leftValue->payloadFloat + rightValue->payloadFloat;
-            ret->type = ValueType::FLOAT;
+            ret->type = ExpressionValueType::FLOAT;
             break;
-        case ValueType::STRING:
+        case ExpressionValueType::STRING:
             ret->payloadStr = leftValue->payloadStr + rightValue->payloadStr;
-            ret->type = ValueType::STRING;
+            ret->type = ExpressionValueType::STRING;
             break;
         default:
             throw std::exception("Addition: Invalid type");
     }
-    
+
     return ret;
 }
 
 
-std::shared_ptr<Value> Subtraction::evaluate(Environment& env) {
-    std::shared_ptr<Value> leftValue = left->evaluate(env);
-    std::shared_ptr<Value> rightValue = right->evaluate(env);
+std::shared_ptr<ExpressionValue> Subtraction::evaluate(Environment& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
     if (leftValue->type != rightValue->type) {
         throw std::exception("Addition: Types do not match up");
     }
 
-    auto ret = std::make_shared<Value>();
+    auto ret = std::make_shared<ExpressionValue>();
 
     switch (leftValue->type) {
-        case ValueType::INT:
+        case ExpressionValueType::INT:
             ret->payloadInt = leftValue->payloadInt - rightValue->payloadInt;
-            ret->type = ValueType::INT;
+            ret->type = ExpressionValueType::INT;
             break;
-        case ValueType::FLOAT:
+        case ExpressionValueType::FLOAT:
             ret->payloadFloat = leftValue->payloadFloat - rightValue->payloadFloat;
-            ret->type = ValueType::FLOAT;
+            ret->type = ExpressionValueType::FLOAT;
             break;
     }
 
@@ -85,24 +85,24 @@ std::shared_ptr<Value> Subtraction::evaluate(Environment& env) {
 }
 
 
-std::shared_ptr<Value> Multiplication::evaluate(Environment& env) {
-    std::shared_ptr<Value> leftValue = left->evaluate(env);
-    std::shared_ptr<Value> rightValue = right->evaluate(env);
+std::shared_ptr<ExpressionValue> Multiplication::evaluate(Environment& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
     if (leftValue->type != rightValue->type) {
         throw std::exception("Addition: Types do not match up");
     }
 
-    auto ret = std::make_shared<Value>();
+    auto ret = std::make_shared<ExpressionValue>();
 
     switch (leftValue->type) {
-        case ValueType::INT:
+        case ExpressionValueType::INT:
             ret->payloadInt = leftValue->payloadInt * rightValue->payloadInt;
-            ret->type = ValueType::INT;
+            ret->type = ExpressionValueType::INT;
             break;
-        case ValueType::FLOAT:
+        case ExpressionValueType::FLOAT:
             ret->payloadFloat = leftValue->payloadFloat * rightValue->payloadFloat;
-            ret->type = ValueType::FLOAT;
+            ret->type = ExpressionValueType::FLOAT;
             break;
     }
 
@@ -110,24 +110,24 @@ std::shared_ptr<Value> Multiplication::evaluate(Environment& env) {
 }
 
 
-std::shared_ptr<Value> Division::evaluate(Environment& env) {
-    std::shared_ptr<Value> leftValue = left->evaluate(env);
-    std::shared_ptr<Value> rightValue = right->evaluate(env);
+std::shared_ptr<ExpressionValue> Division::evaluate(Environment& env) {
+    std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
+    std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
     if (leftValue->type != rightValue->type) {
         throw std::exception("Addition: Types do not match up");
     }
 
-    auto ret = std::make_shared<Value>();
+    auto ret = std::make_shared<ExpressionValue>();
 
     switch (leftValue->type) {
-        case ValueType::INT:
+        case ExpressionValueType::INT:
             ret->payloadInt = leftValue->payloadInt / rightValue->payloadInt;
-            ret->type = ValueType::INT;
+            ret->type = ExpressionValueType::INT;
             break;
-        case ValueType::FLOAT:
+        case ExpressionValueType::FLOAT:
             ret->payloadFloat = leftValue->payloadFloat / rightValue->payloadFloat;
-            ret->type = ValueType::FLOAT;
+            ret->type = ExpressionValueType::FLOAT;
             break;
     }
 
