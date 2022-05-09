@@ -24,6 +24,16 @@ private:
 };
 
 
+class Name: public Expression {
+public:
+    Name(const Token& token);
+
+    std::shared_ptr<ExpressionValue> evaluate(Environment& env);
+
+    std::string name;
+};
+
+
 class BinaryOperation: public Expression {
 public:
     BinaryOperation(std::unique_ptr<Expression> left,
@@ -61,6 +71,20 @@ public:
     using BinaryOperation::BinaryOperation;
     
     std::shared_ptr<ExpressionValue> evaluate(Environment& env);
+};
+
+
+class Assignment: public Expression {
+public:
+    Assignment(std::unique_ptr<Name> left,
+        std::unique_ptr<Expression> right):
+            left(std::move(left)), right(std::move(right)) {}
+
+    std::shared_ptr<ExpressionValue> evaluate(Environment& env);
+
+private:
+    std::shared_ptr<Name> left;
+    std::shared_ptr<Expression> right;
 };
 
 

@@ -19,13 +19,25 @@ Literal::Literal(const Token& token) {
             value->type = ExpressionValueType::FLOAT;
             break;
         default:
-            throw std::exception("Token not convertible to literal");
+            throw std::exception("Token not convertible to Literal");
     }
 }
 
-
 std::shared_ptr<ExpressionValue> Literal::evaluate(Environment& env) {
     return value;
+}
+
+
+Name::Name(const Token& token) {
+    if (!token.isType(TokenType::NAME)) {
+        throw std::exception("Token not convertible to Name");
+    }
+
+    name = token.payloadStr;
+}
+
+std::shared_ptr<ExpressionValue> Name::evaluate(Environment& env) {
+    return env.getVariable(name);
 }
 
 
@@ -132,4 +144,12 @@ std::shared_ptr<ExpressionValue> Division::evaluate(Environment& env) {
     }
 
     return ret;
+}
+
+
+std::shared_ptr<ExpressionValue> Assignment::evaluate(Environment& env) {
+    auto value = right->evaluate(env);
+    env.setVariable(left->name, std::move(value));
+
+    return nullptr;
 }

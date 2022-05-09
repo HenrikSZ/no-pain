@@ -19,10 +19,6 @@ std::ostream& operator << (std::ostream& os, const Token& token) {
 
 Tokenizer::Tokenizer(std::unique_ptr<Input> input): input(std::move(input)) {}
 
-Tokenizer::~Tokenizer() {
-    //
-}
-
 std::shared_ptr<Token> Tokenizer::getStringToken() {
     auto ret = std::make_shared<Token>(TokenType::STRING);
 

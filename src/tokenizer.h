@@ -65,7 +65,6 @@ std::ostream& operator << (std::ostream& outs, const Token& token);
 class Tokenizer {
 public:
     Tokenizer(std::unique_ptr<Input> input);
-    ~Tokenizer();
 
     std::shared_ptr<Token> peekNextToken();
     std::shared_ptr<Token> getNextToken();
