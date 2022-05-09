@@ -13,6 +13,7 @@ public:
 private:
     std::unique_ptr<Expression> parseAddOrSub();
     std::unique_ptr<Expression> parseMulOrDiv();
+    std::unique_ptr<Expression> parseParentheses();
 
     std::unique_ptr<Tokenizer> tokenizer;
 };

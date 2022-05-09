@@ -1,13 +1,25 @@
 #include "parser.h"
 
 
-std::unique_ptr<Expression> Parser::parseMulOrDiv() {
-    auto left = tokenizer->getNextToken();
-    if (!left->isType(TokenType::INT) && !left->isType(TokenType::FLOAT)) {
+std::unique_ptr<Expression> Parser::parseParentheses() {
+    auto left = tokenizer->peekNextToken();
+
+    if (left->isType(TokenType::OPEN_PAR)) {
+        tokenizer->getNextToken();
+        auto ret = parseLine();
+        tokenizer->getNextToken(); // Remove closing parentheses
+        return ret;
+    } else if (left->isType(TokenType::INT) || left->isType(TokenType::FLOAT)) {
+        tokenizer->getNextToken();
+        return std::make_unique<Literal>(*left);
+    } else {
         throw std::exception("Multiplication/Division: Wrong type for left operand");
     }
+}
 
-    std::unique_ptr<Expression> l_operand = std::make_unique<Literal>(*left);
+
+std::unique_ptr<Expression> Parser::parseMulOrDiv() {
+    auto l_operand = parseParentheses();
 
     auto middle = tokenizer->peekNextToken();
     if (middle->isType(TokenType::MULTIPLY)) {

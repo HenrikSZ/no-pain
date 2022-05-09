@@ -11,7 +11,7 @@ cc_test(
   "tokenizer_test.cpp", "tokenizer.cpp", "tokenizer.h",
   "expressions_test.cpp", "expressions.cpp", "expressions.h",
   "environment.cpp", "environment.h",
-  "parser.cpp", "parser.h"
+  "parser_test.cpp", "parser.cpp", "parser.h"
   ],
   deps = ["@com_google_googletest//:gtest_main"],
 )
