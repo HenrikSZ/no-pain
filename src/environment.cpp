@@ -3,7 +3,11 @@
 
 Environment::Environment(): parent(nullptr) {}
 
-Environment::Environment(std::shared_ptr<Environment> parent): parent(parent) {}
+Environment::Environment(std::shared_ptr<Environment>& parent): parent(parent) {}
+
+void Environment::setParent(std::shared_ptr<Environment>& parent) {
+    this->parent = parent;
+}
 
 std::shared_ptr<ExpressionValue> Environment::getVariable(std::string& name) {
     auto var = env.find(name);

@@ -16,7 +16,7 @@ std::unique_ptr<Expression> Parser::parseParentheses() {
         tokenizer->getNextToken();
         return std::make_unique<Literal>(*left);
     } else {
-        throw std::exception("Multiplication/Division: Wrong type for left operand");
+        throw std::exception("Wrong type for left operand");
     }
 }
 
@@ -66,6 +66,30 @@ std::unique_ptr<Expression> Parser::parseAssignment() {
     }
 }
 
+std::unique_ptr<Expression> Parser::parseBlock() {
+    auto token = tokenizer->getNextToken();
+    auto block = std::make_unique<Block>();
+
+    while (!token->isType(TokenType::END_OF_FILE)
+            && !token->isType(TokenType::CLOSE_BLOCK)) {
+        block->addExpression(parseExpression());
+        
+        token = tokenizer->getNextToken();
+    }
+
+    if (token->isType(TokenType::END_OF_FILE)) {
+        throw std::exception("Block not closed");
+    }
+
+    return block;
+}
+
 std::unique_ptr<Expression> Parser::parseExpression() {
-    return parseAssignment();
+    auto token = tokenizer->peekNextToken();
+
+    if (token->isType(TokenType::OPEN_BLOCK)) {
+        return parseBlock();
+    } else {
+        return parseAssignment();
+    }
 }

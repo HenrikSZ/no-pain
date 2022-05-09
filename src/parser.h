@@ -2,8 +2,10 @@
 #define PARSER_H
 
 #include <memory>
+#include <vector>
 
 #include "expressions.h"
+
 
 class Parser {
 public:
@@ -11,6 +13,7 @@ public:
     std::unique_ptr<Expression> parseExpression();
 
 private:
+    std::unique_ptr<Expression> parseBlock();
     std::unique_ptr<Expression> parseAssignment();
     std::unique_ptr<Expression> parseAddOrSub();
     std::unique_ptr<Expression> parseMulOrDiv();

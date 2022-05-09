@@ -3,7 +3,7 @@
 
 
 TEST(Parser, SimpleAddition) {
-    Environment env;
+    auto env = std::make_shared<Environment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 + 5");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -18,7 +18,7 @@ TEST(Parser, SimpleAddition) {
 
 
 TEST(Parser, MultiplicationAndAddition) {
-    Environment env;
+    auto env = std::make_shared<Environment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 + 5 * 3");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -33,7 +33,7 @@ TEST(Parser, MultiplicationAndAddition) {
 
 
 TEST(Parser, ArithmeticWithParentheses) {
-    Environment env;
+    auto env = std::make_shared<Environment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("(10 + 5) * 3");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -48,7 +48,7 @@ TEST(Parser, ArithmeticWithParentheses) {
 
 
 TEST(Parser, Assignment) {
-    Environment env;
+    auto env = std::make_shared<Environment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("x = (10 + 5) * 3");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -61,7 +61,7 @@ TEST(Parser, Assignment) {
     ASSERT_EQ(result->type, ExpressionValueType::INT);
     ASSERT_EQ(result->payloadInt, 45);
 
-    auto variable = env.getVariable(std::string("x"));
+    auto variable = env->getVariable(std::string("x"));
     ASSERT_EQ(variable->type, ExpressionValueType::INT);
     ASSERT_EQ(variable->payloadInt, 45);
 

@@ -30,8 +30,9 @@ public:
 class Environment {
 public:
     Environment();
-    Environment(std::shared_ptr<Environment> parent);
+    Environment(std::shared_ptr<Environment>& parent);
     
+    void setParent(std::shared_ptr<Environment>& parent);
     std::shared_ptr<ExpressionValue> getVariable(std::string& name);
     void setVariable(std::string& name, std::shared_ptr<ExpressionValue>& value);
 

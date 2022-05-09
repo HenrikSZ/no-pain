@@ -23,7 +23,7 @@ Literal::Literal(const Token& token) {
     }
 }
 
-std::shared_ptr<ExpressionValue> Literal::evaluate(Environment& env) {
+std::shared_ptr<ExpressionValue> Literal::evaluate(std::shared_ptr<Environment>& env) {
     return value;
 }
 
@@ -36,12 +36,12 @@ Name::Name(const Token& token) {
     name = token.payloadStr;
 }
 
-std::shared_ptr<ExpressionValue> Name::evaluate(Environment& env) {
-    return env.getVariable(name);
+std::shared_ptr<ExpressionValue> Name::evaluate(std::shared_ptr<Environment>& env) {
+    return env->getVariable(name);
 }
 
 
-std::shared_ptr<ExpressionValue> Addition::evaluate(Environment& env) {
+std::shared_ptr<ExpressionValue> Addition::evaluate(std::shared_ptr<Environment>& env) {
     std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
@@ -72,7 +72,7 @@ std::shared_ptr<ExpressionValue> Addition::evaluate(Environment& env) {
 }
 
 
-std::shared_ptr<ExpressionValue> Subtraction::evaluate(Environment& env) {
+std::shared_ptr<ExpressionValue> Subtraction::evaluate(std::shared_ptr<Environment>& env) {
     std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
@@ -97,7 +97,7 @@ std::shared_ptr<ExpressionValue> Subtraction::evaluate(Environment& env) {
 }
 
 
-std::shared_ptr<ExpressionValue> Multiplication::evaluate(Environment& env) {
+std::shared_ptr<ExpressionValue> Multiplication::evaluate(std::shared_ptr<Environment>& env) {
     std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
@@ -122,7 +122,7 @@ std::shared_ptr<ExpressionValue> Multiplication::evaluate(Environment& env) {
 }
 
 
-std::shared_ptr<ExpressionValue> Division::evaluate(Environment& env) {
+std::shared_ptr<ExpressionValue> Division::evaluate(std::shared_ptr<Environment>& env) {
     std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
 
@@ -147,9 +147,25 @@ std::shared_ptr<ExpressionValue> Division::evaluate(Environment& env) {
 }
 
 
-std::shared_ptr<ExpressionValue> Assignment::evaluate(Environment& env) {
+std::shared_ptr<ExpressionValue> Assignment::evaluate(std::shared_ptr<Environment>& env) {
     auto value = right->evaluate(env);
-    env.setVariable(left->name, std::move(value));
+    env->setVariable(left->name, std::move(value));
 
     return value;
+}
+
+
+void Block::addExpression(std::unique_ptr<Expression>& expr) {
+    exprList.push_back(std::move(expr));
+}
+
+std::shared_ptr<ExpressionValue> Block::evaluate(std::shared_ptr<Environment>& parent) {
+    auto env = std::make_shared<Environment>(parent);
+    std::shared_ptr<ExpressionValue> ret;
+
+    for (auto it = exprList.begin(); it != exprList.end(); it++) {
+        ret = (*it)->evaluate(std::move(env));
+    }
+
+    return ret;
 }
