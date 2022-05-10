@@ -154,3 +154,28 @@ TEST(Parser, IfStatementSimple) {
     ASSERT_EQ(result->type, ExpressionValueType::INT);
     ASSERT_EQ(result->payloadInt, 10);
 }
+
+
+TEST(Parser, IfStatementComplex) {
+    auto env = std::make_shared<Environment>();
+
+    const char* program =
+        "   var = 10 == 10         "
+        "   test = 5               "
+        "   IF var {               "
+        "       test = test * 5    "
+        "   } ELSE {               "
+        "       test = 10          "
+        "   }                      "
+        "   test                   ";
+
+    std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
+    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
+    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+
+    auto tree = parser->parseAll();
+    auto result = tree->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 25);
+}

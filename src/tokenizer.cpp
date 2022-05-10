@@ -130,13 +130,14 @@ std::shared_ptr<Token> Tokenizer::getNextToken() {
     }
 
     char nextChar = input->peekNextChar();
-    while (isspace(nextChar) && input->hasNext()) {
+    while (isspace(nextChar)) {
         input->getNextChar();
-        nextChar = input->peekNextChar();
-    }
-
-    if (isspace(nextChar) && !input->hasNext()) {
-        return std::make_shared<Token>(TokenType::END_OF_FILE);
+        
+        if (input->hasNext()) {
+            nextChar = input->peekNextChar();
+        } else {
+            return std::make_shared<Token>(TokenType::END_OF_FILE);
+        }
     }
 
     switch (nextChar) {

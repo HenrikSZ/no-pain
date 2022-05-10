@@ -197,3 +197,15 @@ std::unique_ptr<Expression> Parser::parseAssignment() {
 std::unique_ptr<Expression> Parser::parseExpression() {
     return parseAssignment();
 }
+
+std::unique_ptr<Expression> Parser::parseAll() {
+    auto globalBlock = std::make_unique<Block>();
+
+    auto next = tokenizer->peekNextToken();
+    while (!next->isType(TokenType::END_OF_FILE)) {
+        globalBlock->addExpression(parseExpression());
+        next = tokenizer->peekNextToken();
+    }
+
+    return globalBlock;
+}
