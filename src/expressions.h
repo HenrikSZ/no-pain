@@ -166,16 +166,17 @@ private:
 
 class IfStatement: public Expression {
 public:
-    IfStatement(std::unique_ptr<Expression>& condition, std::unique_ptr<Expression>& ifBlock,
-        std::unique_ptr<Expression>& elseBlock):
-        condition(condition), ifBlock(ifBlock), elseBlock(elseBlock) {}
+    IfStatement(std::unique_ptr<Expression>& condition, std::unique_ptr<Block>& ifBlock,
+        std::unique_ptr<Block>& elseBlock):
+        condition(std::move(condition)), ifBlock(std::move(ifBlock)),
+        elseBlock(std::move(elseBlock)) {}
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& parent);
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
 
 private:
-    std::unique_ptr<Expression>& condition;
-    std::unique_ptr<Expression>& ifBlock;
-    std::unique_ptr<Expression>& elseBlock;
+    std::unique_ptr<Expression> condition;
+    std::unique_ptr<Expression> ifBlock;
+    std::unique_ptr<Expression> elseBlock;
 };
 
 

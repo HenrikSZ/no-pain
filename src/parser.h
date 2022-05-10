@@ -20,6 +20,7 @@ private:
     std::unique_ptr<Expression> parseComparison();
     std::unique_ptr<Expression> parseAddOrSub();
     std::unique_ptr<Expression> parseMulOrDiv();
+    std::unique_ptr<Expression> parseIfStatement();
     std::unique_ptr<Expression> parseParentheses();
 
     std::unique_ptr<Tokenizer> tokenizer;

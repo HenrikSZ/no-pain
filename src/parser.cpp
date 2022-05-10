@@ -21,8 +21,58 @@ std::unique_ptr<Expression> Parser::parseParentheses() {
 }
 
 
+std::unique_ptr<Expression> Parser::parseBlock() {
+    auto left = tokenizer->peekNextToken();
+
+    if (left->isType(TokenType::OPEN_BLOCK)) {
+        auto token = tokenizer->getNextToken();
+        auto block = std::make_unique<Block>();
+
+        while (!token->isType(TokenType::END_OF_FILE)
+                && !token->isType(TokenType::CLOSE_BLOCK)) {
+            block->addExpression(parseExpression());
+            
+            token = tokenizer->getNextToken();
+        }
+
+        if (token->isType(TokenType::END_OF_FILE)) {
+            throw std::exception("Block not closed");
+        }
+
+        return block;
+    } else {
+        return parseParentheses();
+    }
+}
+
+
+std::unique_ptr<Expression> Parser::parseIfStatement() {
+    auto left = tokenizer->peekNextToken();
+
+    if (left->isType(TokenType::IF)) {
+        tokenizer->getNextToken();
+        auto condition = parseExpression();
+
+        std::unique_ptr<Block> ifBlock = std::make_unique<Block>();
+        ifBlock->addExpression(parseBlock());
+
+        std::unique_ptr<Block> elseBlock = std::make_unique<Block>();
+
+        left = tokenizer->peekNextToken();
+        if (left->isType(TokenType::ELSE)) {
+            tokenizer->getNextToken();
+            elseBlock->addExpression(parseIfStatement());
+        }
+
+        return std::make_unique<IfStatement>(condition, ifBlock, elseBlock);
+    } else {
+        return parseBlock();
+    }
+}
+
+
 std::unique_ptr<Expression> Parser::parseMulOrDiv() {
-    auto leftOperand = parseParentheses();
+    auto leftOperand = parseIfStatement();
 
     while (true) {
         auto middle = tokenizer->peekNextToken();
@@ -144,30 +194,6 @@ std::unique_ptr<Expression> Parser::parseAssignment() {
     }
 }
 
-std::unique_ptr<Expression> Parser::parseBlock() {
-    auto token = tokenizer->getNextToken();
-    auto block = std::make_unique<Block>();
-
-    while (!token->isType(TokenType::END_OF_FILE)
-            && !token->isType(TokenType::CLOSE_BLOCK)) {
-        block->addExpression(parseExpression());
-        
-        token = tokenizer->getNextToken();
-    }
-
-    if (token->isType(TokenType::END_OF_FILE)) {
-        throw std::exception("Block not closed");
-    }
-
-    return block;
-}
-
 std::unique_ptr<Expression> Parser::parseExpression() {
-    auto token = tokenizer->peekNextToken();
-
-    if (token->isType(TokenType::OPEN_BLOCK)) {
-        return parseBlock();
-    } else {
-        return parseAssignment();
-    }
+    return parseAssignment();
 }

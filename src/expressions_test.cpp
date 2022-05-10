@@ -496,10 +496,7 @@ TEST(Expression, IfStatement) {
     trueBlock->addExpression(onTrueLiteral);
     falseBlock->addExpression(onFalseLiteral);
 
-    std::unique_ptr<Expression> trueBlockExpression = std::move(trueBlock);
-    std::unique_ptr<Expression> falseBlockExpression = std::move(falseBlock);
-
-    IfStatement ifStmt(conditionalLiteral, trueBlockExpression, falseBlockExpression);
+    IfStatement ifStmt(conditionalLiteral, trueBlock, falseBlock);
 
     auto result = ifStmt.evaluate(env);
     ASSERT_EQ(result->type, ExpressionValueType::INT);
