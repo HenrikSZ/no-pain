@@ -123,6 +123,22 @@ public:
 };
 
 
+class AndConnective: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
+class OrConnective: public BinaryOperation {
+public:
+    using BinaryOperation::BinaryOperation;
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+};
+
+
 class Assignment: public Expression {
 public:
     Assignment(std::unique_ptr<Name> left,

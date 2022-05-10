@@ -325,6 +325,90 @@ TEST(Expression, NameEvaluation) {
     ASSERT_EQ(eval->payloadInt, 10);
 }
 
+TEST(Expression, AndConnectiveTrueEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token trueToken(TokenType::INT);
+    trueToken.payloadInt = 1;
+
+    std::unique_ptr<Expression> leftTrueLiteral =
+        std::make_unique<Literal>(trueToken);
+    std::unique_ptr<Expression> rightTrueLiteral =
+        std::make_unique<Literal>(trueToken);
+
+    std::unique_ptr<Expression> andTrue =
+        std::make_unique<AndConnective>(std::move(leftTrueLiteral), std::move(rightTrueLiteral));
+
+    auto result = andTrue->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+}
+
+TEST(Expression, AndConnectiveFalseEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token trueToken(TokenType::INT);
+    trueToken.payloadInt = 1;
+    Token falseToken(TokenType::INT);
+    falseToken.payloadInt = 0;
+
+    std::unique_ptr<Expression> leftTrueLiteral =
+        std::make_unique<Literal>(trueToken);
+    std::unique_ptr<Expression> rightFalseLiteral =
+        std::make_unique<Literal>(falseToken);
+
+    std::unique_ptr<Expression> andTrue =
+        std::make_unique<AndConnective>(std::move(leftTrueLiteral), std::move(rightFalseLiteral));
+
+    auto result = andTrue->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+}
+
+TEST(Expression, OrConnectiveTrueEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token trueToken(TokenType::INT);
+    trueToken.payloadInt = 1;
+    Token falseToken(TokenType::INT);
+    falseToken.payloadInt = 0;
+
+    std::unique_ptr<Expression> leftTrueLiteral =
+        std::make_unique<Literal>(trueToken);
+    std::unique_ptr<Expression> rightFalseLiteral =
+        std::make_unique<Literal>(falseToken);
+
+    std::unique_ptr<Expression> orTrue =
+        std::make_unique<OrConnective>(std::move(leftTrueLiteral), std::move(rightFalseLiteral));
+
+    auto result = orTrue->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+}
+
+TEST(Expression, OrConnectiveFalseEvaluation) {
+    auto env = std::make_shared<Environment>();
+
+    Token falseToken(TokenType::INT);
+    falseToken.payloadInt = 0;
+
+    std::unique_ptr<Expression> leftFalseLiteral =
+        std::make_unique<Literal>(falseToken);
+    std::unique_ptr<Expression> rightFalseLiteral =
+        std::make_unique<Literal>(falseToken);
+
+    std::unique_ptr<Expression> andTrue =
+        std::make_unique<AndConnective>(std::move(leftFalseLiteral), std::move(rightFalseLiteral));
+
+    auto result = andTrue->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 0);
+}
+
 TEST(Expression, AssignmentEvaluation) {
     auto env = std::make_shared<Environment>();
 
