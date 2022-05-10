@@ -371,3 +371,16 @@ std::shared_ptr<ExpressionValue> Block::evaluate(std::shared_ptr<Environment>& p
 
     return ret;
 }
+
+
+std::shared_ptr<ExpressionValue> IfStatement::evaluate(
+        std::shared_ptr<Environment>& env) {
+    auto conditionResult = condition->evaluate(env);
+    
+    if (conditionResult->type == ExpressionValueType::INT
+            && conditionResult->payloadInt != 0) {
+        return ifBlock->evaluate(env);
+    } else {
+        return elseBlock->evaluate(env);
+    }
+}

@@ -465,3 +465,43 @@ TEST(Expression, BlockEvaluation) {
     ASSERT_EQ(result->type, ExpressionValueType::INT);
     ASSERT_EQ(result->payloadInt, 50);
 }
+
+TEST(Expression, IfStatement) {
+    auto env = std::make_shared<Environment>();
+
+    Token conditionalToken(TokenType::INT);
+    conditionalToken.payloadInt = 1;
+
+    Token onTrueToken(TokenType::INT);
+    onTrueToken.payloadInt = 10;
+
+    Token onFalseToken(TokenType::INT);
+    onFalseToken.payloadInt = 20;
+
+    std::unique_ptr<Expression> conditionalLiteral =
+        std::make_unique<Literal>(conditionalToken);
+
+    std::unique_ptr<Expression> onTrueLiteral =
+        std::make_unique<Literal>(onTrueToken);
+    
+    std::unique_ptr<Expression> onFalseLiteral =
+        std::make_unique<Literal>(onFalseToken);
+
+    auto trueBlock =
+        std::make_unique<Block>();
+    
+    auto falseBlock =
+        std::make_unique<Block>();
+
+    trueBlock->addExpression(onTrueLiteral);
+    falseBlock->addExpression(onFalseLiteral);
+
+    std::unique_ptr<Expression> trueBlockExpression = std::move(trueBlock);
+    std::unique_ptr<Expression> falseBlockExpression = std::move(falseBlock);
+
+    IfStatement ifStmt(conditionalLiteral, trueBlockExpression, falseBlockExpression);
+
+    auto result = ifStmt.evaluate(env);
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 10);
+}

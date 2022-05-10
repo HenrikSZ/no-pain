@@ -23,6 +23,22 @@ std::shared_ptr<ExpressionValue> Environment::getVariable(std::string& name) {
     }
 }
 
-void Environment::setVariable(std::string& name, std::shared_ptr<ExpressionValue>& value) {
-    env[name] = value;
+bool Environment::setVariableIfDefined(
+        std::string& name, std::shared_ptr<ExpressionValue>& value) {
+    if (env.find(name) == env.end()) {
+        if (parent) {
+            return parent->setVariableIfDefined(name, value);
+        } else {
+            return false;
+        }
+    } else {
+        env[name] = value;
+        return true;
+    }
+}
+
+void Environment::setVariable(
+        std::string& name, std::shared_ptr<ExpressionValue>& value) {
+    if (!parent || !parent->setVariableIfDefined(name, value))
+        env[name] = value;
 }

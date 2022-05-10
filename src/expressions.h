@@ -164,4 +164,19 @@ private:
 };
 
 
+class IfStatement: public Expression {
+public:
+    IfStatement(std::unique_ptr<Expression>& condition, std::unique_ptr<Expression>& ifBlock,
+        std::unique_ptr<Expression>& elseBlock):
+        condition(condition), ifBlock(ifBlock), elseBlock(elseBlock) {}
+
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& parent);
+
+private:
+    std::unique_ptr<Expression>& condition;
+    std::unique_ptr<Expression>& ifBlock;
+    std::unique_ptr<Expression>& elseBlock;
+};
+
+
 #endif
