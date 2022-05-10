@@ -15,6 +15,8 @@ public:
 private:
     std::unique_ptr<Expression> parseBlock();
     std::unique_ptr<Expression> parseAssignment();
+    std::unique_ptr<Expression> Parser::parseOr();
+    std::unique_ptr<Expression> Parser::parseAnd();
     std::unique_ptr<Expression> parseComparison();
     std::unique_ptr<Expression> parseAddOrSub();
     std::unique_ptr<Expression> parseMulOrDiv();

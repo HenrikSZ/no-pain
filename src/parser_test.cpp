@@ -47,6 +47,21 @@ TEST(Parser, ArithmeticWithParentheses) {
 }
 
 
+TEST(Parser, OrConnective) {
+    auto env = std::make_shared<Environment>();
+
+    std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 11 || 10 == 11 || 5 == 5");
+    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
+    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+
+    auto tree = parser->parseExpression();
+    auto result = tree->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1);
+}
+
+
 TEST(Parser, Assignment) {
     auto env = std::make_shared<Environment>();
 

@@ -27,10 +27,10 @@ std::unique_ptr<Expression> Parser::parseMulOrDiv() {
     auto middle = tokenizer->peekNextToken();
     if (middle->isType(TokenType::MULTIPLY)) {
         tokenizer->getNextToken();
-        return std::make_unique<Multiplication>(std::move(leftOperand), parseExpression());
+        return std::make_unique<Multiplication>(std::move(leftOperand), parseParentheses());
     } else if (middle->isType(TokenType::DIVIDE)) {
         tokenizer->getNextToken();
-        return std::make_unique<Division>(std::move(leftOperand), parseExpression());
+        return std::make_unique<Division>(std::move(leftOperand), parseParentheses());
     }
 
     return leftOperand;
@@ -42,10 +42,10 @@ std::unique_ptr<Expression> Parser::parseAddOrSub() {
     auto middle = tokenizer->peekNextToken();
     if (middle->isType(TokenType::ADD)) {
         tokenizer->getNextToken();
-        return std::make_unique<Addition>(std::move(leftOperand), parseExpression());
+        return std::make_unique<Addition>(std::move(leftOperand), parseMulOrDiv());
     } else if (middle->isType(TokenType::SUBTRACT)) {
         tokenizer->getNextToken();
-        return std::make_unique<Subtraction>(std::move(leftOperand), parseExpression());
+        return std::make_unique<Subtraction>(std::move(leftOperand), parseMulOrDiv());
     }
 
     return leftOperand;
@@ -58,35 +58,74 @@ std::unique_ptr<Expression> Parser::parseComparison() {
     if (middle->isType(TokenType::EQUALS)) {
         tokenizer->getNextToken();
         return std::make_unique<EqualComparison>(
-            std::move(leftOperand), parseExpression());
+            std::move(leftOperand), parseAddOrSub());
     } else if (middle->isType(TokenType::GREATER)) {
         tokenizer->getNextToken();
         return std::make_unique<GreaterThanComparison>(
-            std::move(leftOperand), parseExpression());
+            std::move(leftOperand), parseAddOrSub());
     } else if (middle->isType(TokenType::GREATER_OR_EQUALS)) {
         tokenizer->getNextToken();
         return std::make_unique<GreaterThanOrEqualComparison>(
-            std::move(leftOperand), parseExpression());
+            std::move(leftOperand), parseAddOrSub());
     } else if (middle->isType(TokenType::LESS)) {
         tokenizer->getNextToken();
         return std::make_unique<LessThanComparison>(
-            std::move(leftOperand), parseExpression());
+            std::move(leftOperand), parseAddOrSub());
     } else if (middle->isType(TokenType::LESS_OR_EQUALS)) {
         tokenizer->getNextToken();
         return std::make_unique<LessThanOrEqualComparison>(
-            std::move(leftOperand), parseExpression());
+            std::move(leftOperand), parseAddOrSub());
     } else if (middle->isType(TokenType::NOT_EQUALS)) {
         tokenizer->getNextToken();
         return std::make_unique<NotEqualComparison>(
-            std::move(leftOperand), parseExpression());
+            std::move(leftOperand), parseAddOrSub());
     } else {
         return leftOperand;
     }
 }
 
+
+std::unique_ptr<Expression> Parser::parseAnd() {
+    auto leftOperand = parseComparison();
+
+    while (true) {
+        auto middle = tokenizer->peekNextToken();
+        if (middle->isType(TokenType::AND)) {
+            tokenizer->getNextToken();
+
+            leftOperand = std::make_unique<AndConnective>(
+                std::move(leftOperand), parseComparison());
+        } else {
+            break;
+        }
+    }
+
+    return leftOperand;
+}
+
+
+std::unique_ptr<Expression> Parser::parseOr() {
+    auto leftOperand = parseAnd();
+
+    while (true) {
+        auto middle = tokenizer->peekNextToken();
+        if (middle->isType(TokenType::OR)) {
+            tokenizer->getNextToken();
+
+            leftOperand = std::make_unique<OrConnective>(
+                std::move(leftOperand), parseComparison());
+        } else {
+            break;
+        }
+    }
+
+    return leftOperand;
+}
+
+
 std::unique_ptr<Expression> Parser::parseAssignment() {
     auto left = tokenizer->peekNextToken();
-    auto leftOperand = parseComparison();
+    auto leftOperand = parseOr();
 
     auto middle = tokenizer->peekNextToken();
 

@@ -190,6 +190,22 @@ std::shared_ptr<Token> Tokenizer::getNextToken() {
             } else {
                 return std::make_shared<Token>(TokenType::NOT);
             }
+        case '|':
+            input->getNextChar();
+            if (input->peekNextChar() == '|') {
+                input->getNextChar();
+                return std::make_shared<Token>(TokenType::OR);
+            } else {
+                throw std::exception("Bitwise or operator not yet supported");
+            }
+        case '&':
+            input->getNextChar();
+            if (input->peekNextChar() == '&') {
+                input->getNextChar();
+                return std::make_shared<Token>(TokenType::AND);
+            } else {
+                throw std::exception("Bitwise and operator not yet supported");
+            }
         case '+':
             input->getNextChar();
             return std::make_shared<Token>(TokenType::ADD);
