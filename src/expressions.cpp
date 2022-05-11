@@ -399,6 +399,20 @@ const std::vector<std::string>& CustomFunction::getParameterNames() const {
     return parameters;
 }
 
+void CustomFunction::setBody(std::unique_ptr<Expression>& body) {
+    this->body = std::move(body);
+}
+
+
+std::shared_ptr<ExpressionValue> FunctionWrapper::evaluate(
+        std::shared_ptr<Environment>& env) {
+    auto exprVal = std::make_shared<ExpressionValue>();
+    exprVal->type = ExpressionValueType::FUNCTION;
+    exprVal->payloadFunc = function;
+
+    return exprVal;
+}
+
 
 PrintFunction::PrintFunction() {
     parameterNames.push_back(std::string("str"));

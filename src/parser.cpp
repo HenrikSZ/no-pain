@@ -110,8 +110,50 @@ std::unique_ptr<Expression> Parser::parseIfStatement() {
 }
 
 
+std::unique_ptr<Expression> Parser::parseFunctionDeclaration() {
+    auto left = tokenizer->peekNextToken();
+
+    if (left->isType(TokenType::FUN)) {
+        tokenizer->getNextToken();
+
+        auto functionDeclaration = std::make_shared<CustomFunction>();
+        bool nextIsComma = false;
+
+        auto next = tokenizer->peekNextToken();
+        while (!next->isType(TokenType::OPEN_BLOCK)) {
+            if (nextIsComma) {
+                if (!next->isType(TokenType::COMMA)) {
+                    throw std::exception("Comma required in parameter list");
+                }
+
+                tokenizer->getNextToken();
+            }
+            next = tokenizer->peekNextToken();
+
+            if (!next->isType(TokenType::NAME)) {
+                throw std::exception("Only names in parameter list");
+            }
+
+            auto name = std::make_unique<Name>(*tokenizer->getNextToken());
+            functionDeclaration->addParameter(name);
+
+            nextIsComma = true;
+            next = tokenizer->peekNextToken();
+        }
+
+        auto body = parseBlock();
+        functionDeclaration->setBody(body);
+
+        auto wrapper = std::make_unique<FunctionWrapper>(functionDeclaration);
+        return wrapper;
+    } else {
+        return parseIfStatement();
+    }
+}
+
+
 std::unique_ptr<Expression> Parser::parseMulOrDiv() {
-    auto leftOperand = parseIfStatement();
+    auto leftOperand = parseFunctionDeclaration();
 
     while (true) {
         auto middle = tokenizer->peekNextToken();

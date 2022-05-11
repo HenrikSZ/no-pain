@@ -189,16 +189,26 @@ public:
 
 class CustomFunction: public Function {
 public:
-    CustomFunction::CustomFunction(std::unique_ptr<Expression>& body):
-        body(std::move(body)) {}
-
     std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
     const std::vector<std::string>& getParameterNames() const;
     void addParameter(std::unique_ptr<Name>& name);
+    void setBody(std::unique_ptr<Expression>& body);
 
 private:
     std::vector<std::string> parameters;
     std::unique_ptr<Expression> body;
+};
+
+
+class FunctionWrapper: public Expression {
+public:
+    FunctionWrapper(std::shared_ptr<CustomFunction>& function):
+        function(std::move(function)) {}
+    
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+
+private:
+    std::shared_ptr<CustomFunction> function;
 };
 
 

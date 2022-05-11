@@ -193,3 +193,25 @@ TEST(Parser, Invocation) {
     auto tree = parser->parseAll();
     auto result = tree->evaluate(env);
 }
+
+
+TEST(Parser, FunctionDeclarationAndInvocation) {
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
+
+    const char* program =
+        "   func = FUN test {                              "
+        "       IF test > 5 test - 10 ELSE 1000            "
+        "   }                                              "
+        "                                                  "
+        "   result = func(func(10))                        ";
+
+    std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
+    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
+    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+
+    auto tree = parser->parseAll();
+    auto result = tree->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 1000);
+}

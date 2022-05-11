@@ -21,6 +21,7 @@ private:
     std::unique_ptr<Expression> parseComparison();
     std::unique_ptr<Expression> parseAddOrSub();
     std::unique_ptr<Expression> parseMulOrDiv();
+    std::unique_ptr<Expression> parseFunctionDeclaration();
     std::unique_ptr<Expression> parseIfStatement();
     std::unique_ptr<Expression> parseInvocation();
     std::unique_ptr<Expression> parseParentheses();
