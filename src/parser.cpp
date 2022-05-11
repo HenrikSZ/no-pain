@@ -7,16 +7,55 @@ std::unique_ptr<Expression> Parser::parseParentheses() {
     if (left->isType(TokenType::OPEN_PAR)) {
         tokenizer->getNextToken();
         auto ret = parseExpression();
-        tokenizer->getNextToken(); // Remove closing parentheses
+        tokenizer->getNextToken(); // Remove closing parenthesis
         return ret;
     } else if (left->isType(TokenType::NAME)) {
         tokenizer->getNextToken();
         return std::make_unique<Name>(*left);
-    } else if (left->isType(TokenType::INT) || left->isType(TokenType::FLOAT)) {
+    } else if (left->isType(TokenType::INT) || left->isType(TokenType::FLOAT)
+            || left->isType(TokenType::STRING)) {
         tokenizer->getNextToken();
         return std::make_unique<Literal>(*left);
     } else {
         throw std::exception("Wrong type for left operand");
+    }
+}
+
+
+std::unique_ptr<Expression> Parser::parseInvocation() {
+    auto left = tokenizer->peekNextToken();
+    auto leftOperand = parseParentheses();
+
+    auto middle = tokenizer->peekNextToken();
+
+    if (left->isType(TokenType::NAME) && middle->isType(TokenType::OPEN_PAR)) {
+        auto name = std::make_unique<Name>(*left);
+        tokenizer->getNextToken();
+
+        bool nextIsComma = false;
+        auto invocation = std::make_unique<Invocation>(name);
+
+        auto next = tokenizer->peekNextToken();
+        while (!next->isType(TokenType::CLOSE_PAR)) {
+            if (nextIsComma) {
+                if (!next->isType(TokenType::COMMA)) {
+                    throw std::exception("Comma required in argument list");
+                }
+
+                tokenizer->getNextToken();
+            }
+
+            auto arg = parseExpression();
+            invocation->addArgument(arg);
+            
+            nextIsComma = true;
+            next = tokenizer->peekNextToken();
+        }
+        auto var = tokenizer->getNextToken();
+
+        return invocation;
+    } else {
+        return leftOperand;
     }
 }
 
@@ -41,7 +80,7 @@ std::unique_ptr<Expression> Parser::parseBlock() {
 
         return block;
     } else {
-        return parseParentheses();
+        return parseInvocation();
     }
 }
 

@@ -386,6 +386,11 @@ std::shared_ptr<ExpressionValue> IfStatement::evaluate(
 }
 
 
+std::shared_ptr<ExpressionValue> CustomFunction::evaluate(
+        std::shared_ptr<Environment>& env) {
+    return body->evaluate(env);
+}
+
 void CustomFunction::addParameter(std::unique_ptr<Name>& name) {
     parameters.push_back(name->name);
 }
@@ -448,7 +453,7 @@ std::shared_ptr<ExpressionValue> Invocation::evaluate(
         argValue++;
     }
 
-    function->evaluate(functionEnv);
+    return function->evaluate(functionEnv);
 }
 
 

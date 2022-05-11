@@ -503,7 +503,7 @@ TEST(Expression, IfStatement) {
     ASSERT_EQ(result->payloadInt, 10);
 }
 
-TEST(Expression, printStatement) {
+TEST(Expression, PrintFunction) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token printToken(TokenType::NAME);

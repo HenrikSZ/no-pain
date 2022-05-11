@@ -189,12 +189,16 @@ public:
 
 class CustomFunction: public Function {
 public:
+    CustomFunction::CustomFunction(std::unique_ptr<Expression>& body):
+        body(std::move(body)) {}
+
     std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
     const std::vector<std::string>& getParameterNames() const;
     void addParameter(std::unique_ptr<Name>& name);
 
 private:
     std::vector<std::string> parameters;
+    std::unique_ptr<Expression> body;
 };
 
 

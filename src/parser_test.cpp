@@ -179,3 +179,17 @@ TEST(Parser, IfStatementComplex) {
     ASSERT_EQ(result->type, ExpressionValueType::INT);
     ASSERT_EQ(result->payloadInt, 25);
 }
+
+
+TEST(Parser, Invocation) {
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
+
+    const char* program = "print(\"TEST\")";
+
+    std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
+    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
+    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+
+    auto tree = parser->parseAll();
+    auto result = tree->evaluate(env);
+}
