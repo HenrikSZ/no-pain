@@ -3,7 +3,7 @@
 
 
 TEST(Parser, SimpleAddition) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 + 5");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -17,7 +17,7 @@ TEST(Parser, SimpleAddition) {
 }
 
 TEST(Parser, ChainedSubtraction) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("50 - 30 - 10");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -32,7 +32,7 @@ TEST(Parser, ChainedSubtraction) {
 
 
 TEST(Parser, MultiplicationAndAddition) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 + 5 * 3");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -47,7 +47,7 @@ TEST(Parser, MultiplicationAndAddition) {
 
 
 TEST(Parser, ArithmeticWithParentheses) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("(10 + 5) * 3");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -62,7 +62,7 @@ TEST(Parser, ArithmeticWithParentheses) {
 
 
 TEST(Parser, OrConnective) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 11 || 10 == 11 || 5 == 5");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -77,7 +77,7 @@ TEST(Parser, OrConnective) {
 
 
 TEST(Parser, Assignment) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("x = (10 + 5) * 3");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -97,7 +97,7 @@ TEST(Parser, Assignment) {
 
 
 TEST(Parser, SimpleEqualityComparisonTrue) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 10");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -112,7 +112,7 @@ TEST(Parser, SimpleEqualityComparisonTrue) {
 
 
 TEST(Parser, SimpleEqualityComparisonFalse) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 9");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -127,7 +127,7 @@ TEST(Parser, SimpleEqualityComparisonFalse) {
 
 
 TEST(Parser, ChainedEqualityComparison) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 10 == 1");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -142,7 +142,7 @@ TEST(Parser, ChainedEqualityComparison) {
 
 
 TEST(Parser, IfStatementSimple) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("IF 10 == 10 == 1 10 ELSE 5");
     auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
@@ -157,7 +157,7 @@ TEST(Parser, IfStatementSimple) {
 
 
 TEST(Parser, IfStatementComplex) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     const char* program =
         "   var = 10 == 10         "

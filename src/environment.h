@@ -6,10 +6,14 @@
 #include <unordered_map>
 
 
+class Function;
+
+
 enum class ExpressionValueType {
     STRING,
     INT,
-    FLOAT
+    FLOAT,
+    FUNCTION
 };
 
 
@@ -18,10 +22,11 @@ public:
     ExpressionValue() {}
     ~ExpressionValue() {}
     union {
-        std::string payloadStr;
         int payloadInt;
         float payloadFloat;
     };
+    std::string payloadStr;
+    std::shared_ptr<Function> payloadFunc;
 
     ExpressionValueType type;
 };

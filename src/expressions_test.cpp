@@ -3,7 +3,7 @@
 
 
 TEST(Expression, LiteralInit) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token token(TokenType::INT);
     token.payloadInt = 10;
@@ -17,7 +17,7 @@ TEST(Expression, LiteralInit) {
 
 
 TEST(Expression, AdditionEvaluationSimple) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -37,7 +37,7 @@ TEST(Expression, AdditionEvaluationSimple) {
 
 
 TEST(Expression, MultiplicationEvaluationSimple) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -57,7 +57,7 @@ TEST(Expression, MultiplicationEvaluationSimple) {
 
 
 TEST(Expression, MultiplicationAdditionCombined) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -83,7 +83,7 @@ TEST(Expression, MultiplicationAdditionCombined) {
 
 
 TEST(Expression, Equalvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -120,7 +120,7 @@ TEST(Expression, Equalvaluation) {
 
 
 TEST(Expression, GreaterThanEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -157,7 +157,7 @@ TEST(Expression, GreaterThanEvaluation) {
 
 
 TEST(Expression, GreaterThanOrEqualEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -194,7 +194,7 @@ TEST(Expression, GreaterThanOrEqualEvaluation) {
 
 
 TEST(Expression, LessThanEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -231,7 +231,7 @@ TEST(Expression, LessThanEvaluation) {
 
 
 TEST(Expression, LessThanOrEqualEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -268,7 +268,7 @@ TEST(Expression, LessThanOrEqualEvaluation) {
 
 
 TEST(Expression, NotEqualvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token leftToken(TokenType::INT);
     leftToken.payloadInt = 10;
@@ -305,7 +305,7 @@ TEST(Expression, NotEqualvaluation) {
 
 
 TEST(Expression, NameEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token valToken(TokenType::INT);
     valToken.payloadInt = 10;
@@ -326,7 +326,7 @@ TEST(Expression, NameEvaluation) {
 }
 
 TEST(Expression, AndConnectiveTrueEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token trueToken(TokenType::INT);
     trueToken.payloadInt = 1;
@@ -346,7 +346,7 @@ TEST(Expression, AndConnectiveTrueEvaluation) {
 }
 
 TEST(Expression, AndConnectiveFalseEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token trueToken(TokenType::INT);
     trueToken.payloadInt = 1;
@@ -368,7 +368,7 @@ TEST(Expression, AndConnectiveFalseEvaluation) {
 }
 
 TEST(Expression, OrConnectiveTrueEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token trueToken(TokenType::INT);
     trueToken.payloadInt = 1;
@@ -390,7 +390,7 @@ TEST(Expression, OrConnectiveTrueEvaluation) {
 }
 
 TEST(Expression, OrConnectiveFalseEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token falseToken(TokenType::INT);
     falseToken.payloadInt = 0;
@@ -410,7 +410,7 @@ TEST(Expression, OrConnectiveFalseEvaluation) {
 }
 
 TEST(Expression, AssignmentEvaluation) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token valToken(TokenType::INT);
     valToken.payloadInt = 10;
@@ -436,7 +436,7 @@ TEST(Expression, AssignmentEvaluation) {
 TEST(Expression, BlockEvaluation) {
     // (outer is int 50)
     // { inner = outer }
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     auto value = std::make_shared<ExpressionValue>();
     value->payloadInt = 50;
@@ -467,7 +467,7 @@ TEST(Expression, BlockEvaluation) {
 }
 
 TEST(Expression, IfStatement) {
-    auto env = std::make_shared<Environment>();
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     Token conditionalToken(TokenType::INT);
     conditionalToken.payloadInt = 1;
@@ -501,4 +501,23 @@ TEST(Expression, IfStatement) {
     auto result = ifStmt.evaluate(env);
     ASSERT_EQ(result->type, ExpressionValueType::INT);
     ASSERT_EQ(result->payloadInt, 10);
+}
+
+TEST(Expression, printStatement) {
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
+
+    Token printToken(TokenType::NAME);
+    printToken.payloadStr = std::string("print");
+
+    Token stringToken(TokenType::STRING);
+    stringToken.payloadStr = std::string("Hello, world!");
+
+    auto printFuncName = std::make_unique<Name>(printToken);
+
+    std::unique_ptr<Expression> arg = std::make_unique<Literal>(stringToken);
+    auto printExpr = std::make_unique<Invocation>(printFuncName);
+
+    printExpr->addArgument(arg);
+
+    printExpr->evaluate(env);
 }

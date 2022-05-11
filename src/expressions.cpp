@@ -384,3 +384,81 @@ std::shared_ptr<ExpressionValue> IfStatement::evaluate(
         return elseBlock->evaluate(env);
     }
 }
+
+
+void CustomFunction::addParameter(std::unique_ptr<Name>& name) {
+    parameters.push_back(name->name);
+}
+
+const std::vector<std::string>& CustomFunction::getParameterNames() const {
+    return parameters;
+}
+
+
+PrintFunction::PrintFunction() {
+    parameterNames.push_back(std::string("str"));
+}
+
+const std::vector<std::string>& PrintFunction::getParameterNames() const {
+    return parameterNames;
+}
+
+std::shared_ptr<ExpressionValue> PrintFunction::evaluate(
+        std::shared_ptr<Environment>& env) {
+    auto str = env->getVariable(*parameterNames.begin());
+
+    if (str->type != ExpressionValueType::STRING) {
+        throw std::exception("Only print strings");
+    }
+
+    std::cout << str->payloadStr;
+
+    return nullptr;
+}
+
+
+void Invocation::addArgument(std::unique_ptr<Expression>& arg) {
+    arguments.push_back(std::move(arg));
+}
+
+std::shared_ptr<ExpressionValue> Invocation::evaluate(
+        std::shared_ptr<Environment>& env) {
+    auto functionVar = env->getVariable(functionName);
+
+    if (functionVar->type != ExpressionValueType::FUNCTION) {
+        throw std::exception("Only invoke functions");
+    }
+
+    auto function = functionVar->payloadFunc;
+    auto paramNames = function->getParameterNames();
+
+    if (paramNames.size() != arguments.size()) {
+        throw std::exception("Function arguments do not map to parameters");
+    }
+
+    auto functionEnv = std::make_shared<Environment>(env);
+
+    auto paramName = paramNames.begin();
+    auto argValue = arguments.begin();
+    while (paramName != paramNames.end()) {
+        // TODO decide on what to do with variable shadowing
+        env->setVariable(*paramName, (*argValue)->evaluate(env));
+
+        paramName++;
+        argValue++;
+    }
+
+    function->evaluate(functionEnv);
+}
+
+
+GlobalEnvironment::GlobalEnvironment() {
+    std::shared_ptr<Function> printFunction = std::make_shared<PrintFunction>();
+    auto printFunctionVar = std::make_shared<ExpressionValue>();
+
+    printFunctionVar->type = ExpressionValueType::FUNCTION;
+    printFunctionVar->payloadFunc = printFunction;
+
+    setVariable(std::string("print"), printFunctionVar);
+}
+

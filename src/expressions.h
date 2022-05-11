@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <iostream>
 
 #include "environment.h"
 #include "tokenizer.h"
@@ -177,6 +178,54 @@ private:
     std::unique_ptr<Expression> condition;
     std::unique_ptr<Expression> ifBlock;
     std::unique_ptr<Expression> elseBlock;
+};
+
+
+class Function: public Expression {
+public:
+    virtual const std::vector<std::string>& getParameterNames() const = 0;
+};
+
+
+class CustomFunction: public Function {
+public:
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    const std::vector<std::string>& getParameterNames() const;
+    void addParameter(std::unique_ptr<Name>& name);
+
+private:
+    std::vector<std::string> parameters;
+};
+
+
+class PrintFunction: public Function {
+public:
+    PrintFunction();
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    const std::vector<std::string>& getParameterNames() const;
+
+private:
+    std::vector<std::string> parameterNames;
+};
+
+
+class Invocation: public Expression {
+public:
+    Invocation(std::unique_ptr<Name>& functionName):
+        functionName(functionName->name) {}
+     void addArgument(std::unique_ptr<Expression>& arg);
+
+    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+
+private:
+    std::string functionName;
+    std::vector<std::unique_ptr<Expression>> arguments;
+};
+
+
+class GlobalEnvironment: public Environment {
+public:
+    GlobalEnvironment();  
 };
 
 
