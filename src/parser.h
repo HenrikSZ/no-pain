@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+
 #include <memory>
 #include <vector>
 
@@ -9,7 +10,7 @@
 
 class Parser {
 public:
-    Parser(std::unique_ptr<Tokenizer> tokenizer): tokenizer(std::move(tokenizer)) {}
+    Parser(std::unique_ptr<Tokenizer>& tokenizer);
     std::unique_ptr<Expression> parseAll();
     std::unique_ptr<Expression> parseExpression();
 

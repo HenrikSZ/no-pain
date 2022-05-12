@@ -41,6 +41,11 @@ std::shared_ptr<ExpressionValue> Name::evaluate(std::shared_ptr<Environment>& en
 }
 
 
+BinaryOperation::BinaryOperation(std::unique_ptr<Expression> left,
+        std::unique_ptr<Expression> right):
+            left(std::move(left)), right(std::move(right)) {}
+
+
 std::shared_ptr<ExpressionValue> Addition::evaluate(std::shared_ptr<Environment>& env) {
     std::shared_ptr<ExpressionValue> leftValue = left->evaluate(env);
     std::shared_ptr<ExpressionValue> rightValue = right->evaluate(env);
@@ -349,6 +354,10 @@ std::shared_ptr<ExpressionValue> OrConnective::evaluate(std::shared_ptr<Environm
 }
 
 
+Assignment::Assignment(std::unique_ptr<Name> left,
+        std::unique_ptr<Expression> right):
+    left(std::move(left)), right(std::move(right)) {}
+
 std::shared_ptr<ExpressionValue> Assignment::evaluate(std::shared_ptr<Environment>& env) {
     auto value = right->evaluate(env);
     env->setVariable(left->name, std::move(value));
@@ -356,10 +365,6 @@ std::shared_ptr<ExpressionValue> Assignment::evaluate(std::shared_ptr<Environmen
     return value;
 }
 
-
-void Block::addExpression(std::unique_ptr<Expression>& expr) {
-    exprList.push_back(std::move(expr));
-}
 
 std::shared_ptr<ExpressionValue> Block::evaluate(std::shared_ptr<Environment>& parent) {
     auto env = std::make_shared<Environment>(parent);
@@ -372,6 +377,15 @@ std::shared_ptr<ExpressionValue> Block::evaluate(std::shared_ptr<Environment>& p
     return ret;
 }
 
+void Block::addExpression(std::unique_ptr<Expression>& expr) {
+    exprList.push_back(std::move(expr));
+}
+
+
+IfStatement::IfStatement(std::unique_ptr<Expression>& condition,
+        std::unique_ptr<Block>& ifBlock, std::unique_ptr<Block>& elseBlock):
+    condition(std::move(condition)), ifBlock(std::move(ifBlock)),
+        elseBlock(std::move(elseBlock)) {}
 
 std::shared_ptr<ExpressionValue> IfStatement::evaluate(
         std::shared_ptr<Environment>& env) {
@@ -404,6 +418,9 @@ void CustomFunction::setBody(std::unique_ptr<Expression>& body) {
 }
 
 
+FunctionWrapper::FunctionWrapper(std::shared_ptr<CustomFunction>& function):
+        function(std::move(function)) {}
+
 std::shared_ptr<ExpressionValue> FunctionWrapper::evaluate(
         std::shared_ptr<Environment>& env) {
     auto exprVal = std::make_shared<ExpressionValue>();
@@ -416,10 +433,6 @@ std::shared_ptr<ExpressionValue> FunctionWrapper::evaluate(
 
 PrintFunction::PrintFunction() {
     parameterNames.push_back(std::string("str"));
-}
-
-const std::vector<std::string>& PrintFunction::getParameterNames() const {
-    return parameterNames;
 }
 
 std::shared_ptr<ExpressionValue> PrintFunction::evaluate(
@@ -435,10 +448,13 @@ std::shared_ptr<ExpressionValue> PrintFunction::evaluate(
     return nullptr;
 }
 
-
-void Invocation::addArgument(std::unique_ptr<Expression>& arg) {
-    arguments.push_back(std::move(arg));
+const std::vector<std::string>& PrintFunction::getParameterNames() const {
+    return parameterNames;
 }
+
+
+Invocation::Invocation(std::unique_ptr<Name>& functionName):
+        functionName(functionName->name) {}
 
 std::shared_ptr<ExpressionValue> Invocation::evaluate(
         std::shared_ptr<Environment>& env) {
@@ -468,6 +484,10 @@ std::shared_ptr<ExpressionValue> Invocation::evaluate(
     }
 
     return function->evaluate(functionEnv);
+}
+
+void Invocation::addArgument(std::unique_ptr<Expression>& arg) {
+    arguments.push_back(std::move(arg));
 }
 
 

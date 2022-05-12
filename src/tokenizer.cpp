@@ -11,13 +11,9 @@ bool Token::isType(TokenType type) const {
     return tokenType == type;
 }
 
-std::ostream& operator << (std::ostream& os, const Token& token) {
-    os << "Token" << token.getType();
-    return os;
-}
 
-
-Tokenizer::Tokenizer(std::unique_ptr<Input> input): input(std::move(input)) {}
+Tokenizer::Tokenizer(std::unique_ptr<Input>& input):
+    input(std::move(input)) {}
 
 std::shared_ptr<Token> Tokenizer::getStringToken() {
     auto ret = std::make_shared<Token>(TokenType::STRING);

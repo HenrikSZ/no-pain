@@ -19,8 +19,9 @@ enum class ExpressionValueType {
 
 class ExpressionValue {
 public:
-    ExpressionValue() {}
-    ~ExpressionValue() {}
+    ExpressionValue();
+    ~ExpressionValue();
+
     union {
         int payloadInt;
         float payloadFloat;
@@ -39,9 +40,13 @@ public:
     
     void setParent(std::shared_ptr<Environment>& parent);
     std::shared_ptr<ExpressionValue> getVariable(std::string& name);
-    bool setVariableIfDefined(std::string& name, std::shared_ptr<ExpressionValue>& value);
-    void setVariable(std::string& name, std::shared_ptr<ExpressionValue>& value);
-    void setLocalVariable(std::string& name, std::shared_ptr<ExpressionValue>& value);
+    
+    bool setVariableIfDefined(std::string& name,
+        std::shared_ptr<ExpressionValue>& value);
+    void setVariable(std::string& name,
+        std::shared_ptr<ExpressionValue>& value);
+    void setLocalVariable(std::string& name,
+        std::shared_ptr<ExpressionValue>& value);
 
 private:
     std::shared_ptr<Environment> parent;

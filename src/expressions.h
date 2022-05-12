@@ -11,7 +11,8 @@
 
 class Expression {
 public:
-    virtual std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env) = 0;
+    virtual std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env) = 0;
 };
 
 
@@ -19,7 +20,8 @@ class Literal: public Expression {
 public:
     Literal(const Token& token);
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 
 private:
     std::shared_ptr<ExpressionValue> value;
@@ -30,7 +32,8 @@ class Name: public Expression {
 public:
     Name(const Token& token);
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 
     std::string name;
 };
@@ -39,8 +42,8 @@ public:
 class BinaryOperation: public Expression {
 public:
     BinaryOperation(std::unique_ptr<Expression> left,
-        std::unique_ptr<Expression> right):
-            left(std::move(left)), right(std::move(right)) {}
+        std::unique_ptr<Expression> right);
+        
 protected:
     std::unique_ptr<Expression> left;
     std::unique_ptr<Expression> right;
@@ -51,28 +54,32 @@ class Addition: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 class Subtraction: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 class Multiplication: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 class Division: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -80,7 +87,8 @@ class EqualComparison: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -88,7 +96,8 @@ class GreaterThanComparison: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -96,7 +105,8 @@ class GreaterThanOrEqualComparison: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -104,7 +114,8 @@ class LessThanComparison: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -112,7 +123,8 @@ class LessThanOrEqualComparison: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -120,7 +132,8 @@ class NotEqualComparison: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -128,7 +141,8 @@ class AndConnective: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
@@ -136,17 +150,18 @@ class OrConnective: public BinaryOperation {
 public:
     using BinaryOperation::BinaryOperation;
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 };
 
 
 class Assignment: public Expression {
 public:
     Assignment(std::unique_ptr<Name> left,
-        std::unique_ptr<Expression> right):
-            left(std::move(left)), right(std::move(right)) {}
+        std::unique_ptr<Expression> right);
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 
 private:
     std::shared_ptr<Name> left;
@@ -156,9 +171,10 @@ private:
 
 class Block: public Expression {
 public:
-    void addExpression(std::unique_ptr<Expression>& expr);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& parent);
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& parent);
+    void addExpression(std::unique_ptr<Expression>& expr);
 
 private:
     std::vector<std::unique_ptr<Expression>> exprList;
@@ -167,12 +183,11 @@ private:
 
 class IfStatement: public Expression {
 public:
-    IfStatement(std::unique_ptr<Expression>& condition, std::unique_ptr<Block>& ifBlock,
-        std::unique_ptr<Block>& elseBlock):
-        condition(std::move(condition)), ifBlock(std::move(ifBlock)),
-        elseBlock(std::move(elseBlock)) {}
+    IfStatement(std::unique_ptr<Expression>& condition,
+        std::unique_ptr<Block>& ifBlock, std::unique_ptr<Block>& elseBlock);
 
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 
 private:
     std::unique_ptr<Expression> condition;
@@ -189,7 +204,9 @@ public:
 
 class CustomFunction: public Function {
 public:
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
+
     const std::vector<std::string>& getParameterNames() const;
     void addParameter(std::unique_ptr<Name>& name);
     void setBody(std::unique_ptr<Expression>& body);
@@ -202,10 +219,10 @@ private:
 
 class FunctionWrapper: public Expression {
 public:
-    FunctionWrapper(std::shared_ptr<CustomFunction>& function):
-        function(std::move(function)) {}
+    FunctionWrapper(std::shared_ptr<CustomFunction>& function);
     
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
 
 private:
     std::shared_ptr<CustomFunction> function;
@@ -215,7 +232,10 @@ private:
 class PrintFunction: public Function {
 public:
     PrintFunction();
-    std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+    
+    std::shared_ptr<ExpressionValue> evaluate(
+        std::shared_ptr<Environment>& env);
+    
     const std::vector<std::string>& getParameterNames() const;
 
 private:
@@ -225,11 +245,11 @@ private:
 
 class Invocation: public Expression {
 public:
-    Invocation(std::unique_ptr<Name>& functionName):
-        functionName(functionName->name) {}
-     void addArgument(std::unique_ptr<Expression>& arg);
+    Invocation(std::unique_ptr<Name>& functionName);
 
     std::shared_ptr<ExpressionValue> evaluate(std::shared_ptr<Environment>& env);
+
+    void addArgument(std::unique_ptr<Expression>& arg);
 
 private:
     std::string functionName;

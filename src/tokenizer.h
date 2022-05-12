@@ -60,15 +60,14 @@ private:
     TokenType tokenType;
 };
 
-std::ostream& operator << (std::ostream& outs, const Token& token);
-
 
 class Tokenizer {
 public:
-    Tokenizer(std::unique_ptr<Input> input);
+    Tokenizer(std::unique_ptr<Input>& input);
 
     std::shared_ptr<Token> peekNextToken();
     std::shared_ptr<Token> getNextToken();
+    
 private:
     std::shared_ptr<Token> getStringToken();
     std::shared_ptr<Token> getNumericalToken();

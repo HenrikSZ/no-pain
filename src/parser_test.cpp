@@ -6,8 +6,8 @@ TEST(Parser, SimpleAddition) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 + 5");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -20,8 +20,8 @@ TEST(Parser, ChainedSubtraction) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("50 - 30 - 10");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -35,8 +35,8 @@ TEST(Parser, MultiplicationAndAddition) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 + 5 * 3");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -50,8 +50,8 @@ TEST(Parser, ArithmeticWithParentheses) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("(10 + 5) * 3");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -65,8 +65,8 @@ TEST(Parser, OrConnective) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 11 || 10 == 11 || 5 == 5");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -80,8 +80,8 @@ TEST(Parser, Assignment) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("x = (10 + 5) * 3");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -100,8 +100,8 @@ TEST(Parser, SimpleEqualityComparisonTrue) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 10");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -115,8 +115,8 @@ TEST(Parser, SimpleEqualityComparisonFalse) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 9");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -130,8 +130,8 @@ TEST(Parser, ChainedEqualityComparison) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("10 == 10 == 1");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -145,8 +145,8 @@ TEST(Parser, IfStatementSimple) {
     std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>("IF 10 == 10 == 1 10 ELSE 5");
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseExpression();
     auto result = tree->evaluate(env);
@@ -170,8 +170,8 @@ TEST(Parser, IfStatementComplex) {
         "   test                   ";
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseAll();
     auto result = tree->evaluate(env);
@@ -187,8 +187,8 @@ TEST(Parser, Invocation) {
     const char* program = "print(\"TEST\")";
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseAll();
     auto result = tree->evaluate(env);
@@ -206,8 +206,8 @@ TEST(Parser, FunctionDeclarationAndInvocation) {
         "   result = func(func(10))                        ";
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseAll();
     auto result = tree->evaluate(env);
@@ -233,8 +233,8 @@ TEST(Parser, RecursiveFibonacci) {
 
 
     std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
-    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
-    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+    auto tokenizer = std::make_unique<Tokenizer>(input);
+    auto parser = std::make_unique<Parser>(tokenizer);
 
     auto tree = parser->parseAll();
     auto result = tree->evaluate(env);

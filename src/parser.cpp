@@ -1,6 +1,10 @@
 #include "parser.h"
 
 
+Parser::Parser(std::unique_ptr<Tokenizer>& tokenizer):
+    tokenizer(std::move(tokenizer)) {}
+
+
 std::unique_ptr<Expression> Parser::parseParentheses() {
     auto left = tokenizer->peekNextToken();
 

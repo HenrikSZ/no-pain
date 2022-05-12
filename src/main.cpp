@@ -16,6 +16,16 @@ int main(int argc, char* argv[]) {
         auto tree = parser->parseAll();
         auto result = tree->evaluate(env);
 
-        std::cout << result->payloadInt;
+        switch (result->type) {
+            case ExpressionValueType::INT:
+                std::cout << result->payloadInt;
+                break;
+            case ExpressionValueType::FLOAT:
+                std::cout << result->payloadFloat;
+                break;
+            case ExpressionValueType::STRING:
+                std::cout << result->payloadStr;
+                break;
+        }
     }
 }
