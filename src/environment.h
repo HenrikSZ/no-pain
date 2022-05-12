@@ -41,6 +41,7 @@ public:
     std::shared_ptr<ExpressionValue> getVariable(std::string& name);
     bool setVariableIfDefined(std::string& name, std::shared_ptr<ExpressionValue>& value);
     void setVariable(std::string& name, std::shared_ptr<ExpressionValue>& value);
+    void setLocalVariable(std::string& name, std::shared_ptr<ExpressionValue>& value);
 
 private:
     std::shared_ptr<Environment> parent;

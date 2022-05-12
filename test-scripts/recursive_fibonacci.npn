@@ -1,0 +1,10 @@
+
+fib = FUN x {
+    IF x <= 2 {
+        1 
+    } ELSE {
+        fib(x - 1) + fib(x - 2)
+    }
+}
+
+fib(6)

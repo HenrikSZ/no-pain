@@ -215,3 +215,31 @@ TEST(Parser, FunctionDeclarationAndInvocation) {
     ASSERT_EQ(result->type, ExpressionValueType::INT);
     ASSERT_EQ(result->payloadInt, 1000);
 }
+
+
+TEST(Parser, RecursiveFibonacci) {
+    std::shared_ptr<Environment> env = std::make_shared<GlobalEnvironment>();
+
+    const char* program =
+        "   fib = FUN x {                         "
+        "      IF x <= 2 {                        "
+        "          1                              " 
+        "      } ELSE {                           "
+        "          fib(x - 1) + fib(x - 2)        "
+        "      }                                  "
+        "   }                                     "
+        "                                         "
+        "   fib(6)                                ";
+
+
+    std::unique_ptr<Input> input = std::make_unique<StringInput>(program);
+    auto tokenizer = std::make_unique<Tokenizer>(std::move(input));
+    auto parser = std::make_unique<Parser>(std::move(tokenizer));
+
+    auto tree = parser->parseAll();
+    auto result = tree->evaluate(env);
+
+    ASSERT_EQ(result->type, ExpressionValueType::INT);
+    ASSERT_EQ(result->payloadInt, 8);
+}
+

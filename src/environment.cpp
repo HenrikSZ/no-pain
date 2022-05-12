@@ -40,5 +40,10 @@ bool Environment::setVariableIfDefined(
 void Environment::setVariable(
         std::string& name, std::shared_ptr<ExpressionValue>& value) {
     if (!parent || !parent->setVariableIfDefined(name, value))
-        env[name] = value;
+        setLocalVariable(name, value);
+}
+
+void Environment::setLocalVariable(
+        std::string& name, std::shared_ptr<ExpressionValue>& value) {
+    env[name] = value;
 }

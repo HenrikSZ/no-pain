@@ -26,6 +26,8 @@ public:
     char peekNextChar();
 
 private:
+    void advanceToNonEmptyLine();
+
     std::ifstream filestream;
     std::string currentLine;
     char nextChar;

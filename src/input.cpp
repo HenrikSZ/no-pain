@@ -8,12 +8,21 @@ FileInput::FileInput(std::string& filename) {
     peeked = false;
     pointer = -1;
 
-    std::getline(filestream, currentLine);
-    hasNextChar = currentLine.length() > 0;
+    advanceToNonEmptyLine();
 }
 
 FileInput::~FileInput() {
     filestream.close();
+}
+
+void FileInput::advanceToNonEmptyLine() {
+    hasNextChar = false;
+    while (std::getline(filestream, currentLine)) {
+        if (currentLine.length() > 0) {
+            hasNextChar = true;
+            break;
+        }
+    }
 }
 
 char FileInput::getNextChar() {
@@ -29,10 +38,7 @@ char FileInput::getNextChar() {
         nextChar = currentLine[pointer];
 
         if (pointer + 1 >= currentLine.length()) {
-            std::getline(filestream, currentLine);
-            if (currentLine.length() == 0) {
-                hasNextChar = false;
-            }
+            advanceToNonEmptyLine();
 
             pointer = -1;
             nextCharAdvLineNumber = true;
@@ -43,7 +49,7 @@ char FileInput::getNextChar() {
 }
 
 bool FileInput::hasNext() const {
-    return hasNextChar;
+    return peeked || hasNextChar;
 }
 
 char FileInput::peekNextChar() {

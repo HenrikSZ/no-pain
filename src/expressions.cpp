@@ -461,7 +461,7 @@ std::shared_ptr<ExpressionValue> Invocation::evaluate(
     auto argValue = arguments.begin();
     while (paramName != paramNames.end()) {
         // TODO decide on what to do with variable shadowing
-        env->setVariable(*paramName, (*argValue)->evaluate(env));
+        functionEnv->setLocalVariable(*paramName, (*argValue)->evaluate(env));
 
         paramName++;
         argValue++;
