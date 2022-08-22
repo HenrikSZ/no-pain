@@ -41,7 +41,7 @@ bool Environment::setVariableIfDefined(
             return false;
         }
     } else {
-        env[name] = value;
+        setLocalVariable(name, value);
         return true;
     }
 }

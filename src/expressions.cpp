@@ -304,53 +304,31 @@ std::shared_ptr<ExpressionValue> NotEqualComparison::evaluate(std::shared_ptr<En
 
 std::shared_ptr<ExpressionValue> AndConnective::evaluate(std::shared_ptr<Environment>& env) {
     auto leftValue = left->evaluate(env);
-
-    auto ret = std::make_shared<ExpressionValue>();
-    ret->type = ExpressionValueType::INT;
     
     if (leftValue->type == ExpressionValueType::INT) {
         if (leftValue->payloadInt == 0) {
-            ret->payloadInt = 0;
+            return leftValue;
         } else {
-            auto rightValue = right->evaluate(env);
-
-            if (rightValue->type == ExpressionValueType::INT) {
-                ret->payloadInt = rightValue->payloadInt == 0 ? 0 : 1;
-            } else {
-                throw std::exception("And: Wrong types");
-            }
+            return right->evaluate(env);
         }
     } else {
         throw std::exception("And: Wrong types");
     }
-
-    return ret;
 }
 
 
 std::shared_ptr<ExpressionValue> OrConnective::evaluate(std::shared_ptr<Environment>& env) {
     auto leftValue = left->evaluate(env);
-
-    auto ret = std::make_shared<ExpressionValue>();
-    ret->type = ExpressionValueType::INT;
     
     if (leftValue->type == ExpressionValueType::INT) {
         if (leftValue->payloadInt == 1) {
-            ret->payloadInt = 1;
+            return leftValue;
         } else {
-            auto rightValue = right->evaluate(env);
-
-            if (rightValue->type == ExpressionValueType::INT) {
-                ret->payloadInt = rightValue->payloadInt == 0 ? 0 : 1;
-            } else {
-                throw std::exception("Or: Wrong types");
-            }
+            return right->evaluate(env);
         }
     } else {
         throw std::exception("Or: Wrong types");
     }
-
-    return ret;
 }
 
 

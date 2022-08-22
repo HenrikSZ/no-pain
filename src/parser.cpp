@@ -89,7 +89,7 @@ std::unique_ptr<Expression> Parser::parseBlock() {
 }
 
 
-std::unique_ptr<Expression> Parser::parseIfStatement() {
+std::unique_ptr<Expression> Parser::parseIfExpression() {
     auto left = tokenizer->peekNextToken();
 
     if (left->isType(TokenType::IF)) {
@@ -104,7 +104,7 @@ std::unique_ptr<Expression> Parser::parseIfStatement() {
         left = tokenizer->peekNextToken();
         if (left->isType(TokenType::ELSE)) {
             tokenizer->getNextToken();
-            elseBlock->addExpression(parseIfStatement());
+            elseBlock->addExpression(parseIfExpression());
         }
 
         return std::make_unique<IfStatement>(condition, ifBlock, elseBlock);
@@ -151,7 +151,7 @@ std::unique_ptr<Expression> Parser::parseFunctionDeclaration() {
         auto wrapper = std::make_unique<FunctionWrapper>(functionDeclaration);
         return wrapper;
     } else {
-        return parseIfStatement();
+        return parseIfExpression();
     }
 }
 
